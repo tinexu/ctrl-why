@@ -56,6 +56,8 @@ curl -X DELETE http://localhost:8000/api/v1/repositories/WORKSPACE_ID
 
 Repository workspaces expire after one hour by default and are deleted when the API shuts down. Git metadata is removed after cloning, unsafe archive paths and symbolic links are rejected, and configurable file/size limits protect temporary storage. Repository code is never executed.
 
+The web app provides a form for the same public GitHub ingestion flow. Interactive API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
+
 ## Run the web app
 
 In a second terminal:

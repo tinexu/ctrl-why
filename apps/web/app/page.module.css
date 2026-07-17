@@ -35,23 +35,106 @@
   line-height: 1.7;
 }
 
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
+.form {
   margin-top: 2.5rem;
-  padding: 0.7rem 0.9rem;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 999px;
+}
+
+.label,
+.cardLabel {
+  display: block;
+  margin-bottom: 0.65rem;
   color: #bac6d2;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.statusDot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
+.inputRow {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.input {
+  min-width: 0;
+  flex: 1;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 0.75rem;
+  outline: none;
+  background: rgba(15, 23, 42, 0.7);
+  color: #eef4f8;
+  font: inherit;
+}
+
+.input:focus {
+  border-color: #5eead4;
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.12);
+}
+
+.button {
+  padding: 0.9rem 1.2rem;
+  border: 0;
+  border-radius: 0.75rem;
   background: #5eead4;
-  box-shadow: 0 0 1rem rgba(94, 234, 212, 0.7);
+  color: #07110f;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
 }
 
+.button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.error {
+  margin-top: 1rem;
+  color: #fca5a5;
+}
+
+.card {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(94, 234, 212, 0.2);
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.cardDescription {
+  margin: 0.75rem 0 0;
+  color: #95a4b4;
+}
+
+.metadata {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+}
+
+.metadata dt {
+  color: #718096;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.metadata dd {
+  margin: 0.35rem 0 0;
+  font-weight: 650;
+}
+
+@media (max-width: 42rem) {
+  .inputRow {
+    flex-direction: column;
+  }
+
+  .metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
