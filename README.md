@@ -1,6 +1,6 @@
 # WTF Does This Repo Do?
 
-An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. The project is currently in Phase 1: the frontend and backend application foundations are runnable, but repository analysis is not implemented yet.
+An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. The project currently supports secure repository ingestion and temporary workspace management. Source-code parsing is not implemented yet.
 
 ## Prerequisites
 
@@ -30,6 +30,32 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 Verify [http://localhost:8000/health](http://localhost:8000/health). It should return `{"status":"ok"}`.
 
+## Ingest a repository
+
+Clone a public GitHub repository into temporary storage:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/repositories/github \
+  -H 'Content-Type: application/json' \
+  -d '{"repository_url":"https://github.com/owner/repository"}'
+```
+
+Or upload a ZIP archive:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/repositories/uploads \
+  -F 'repository=@repository.zip;type=application/zip'
+```
+
+Both endpoints return an opaque workspace `id`, file count, byte count, and expiration time. Inspect or delete the workspace with:
+
+```bash
+curl http://localhost:8000/api/v1/repositories/WORKSPACE_ID
+curl -X DELETE http://localhost:8000/api/v1/repositories/WORKSPACE_ID
+```
+
+Repository workspaces expire after one hour by default and are deleted when the API shuts down. Git metadata is removed after cloning, unsafe archive paths and symbolic links are rejected, and configurable file/size limits protect temporary storage. Repository code is never executed.
+
 ## Run the web app
 
 In a second terminal:
@@ -58,4 +84,3 @@ make build
 apps/web/          Next.js frontend
 services/api/      FastAPI backend
 ```
-

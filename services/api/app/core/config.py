@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,6 +11,12 @@ class Settings(BaseSettings):
     app_host: str = "127.0.0.1"
     app_port: int = 8000
     app_cors_origins: str = "http://localhost:3000"
+    repository_workspace_ttl_seconds: int = Field(default=3600, gt=0)
+    repository_max_download_bytes: int = Field(default=50 * 1024 * 1024, gt=0)
+    repository_max_expanded_bytes: int = Field(default=100 * 1024 * 1024, gt=0)
+    repository_max_files: int = Field(default=5000, gt=0)
+    repository_clone_timeout_seconds: int = Field(default=120, gt=0)
+    repository_temp_root: str | None = None
 
     @property
     def cors_origins(self) -> list[str]:
