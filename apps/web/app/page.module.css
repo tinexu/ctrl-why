@@ -1,0 +1,57 @@
+.main {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 2rem;
+}
+
+.content {
+  width: min(100%, 48rem);
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: #5eead4;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 42rem;
+  margin: 0;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  font-weight: 650;
+  letter-spacing: -0.065em;
+  line-height: 0.94;
+}
+
+.description {
+  max-width: 36rem;
+  margin: 2rem 0 0;
+  color: #95a4b4;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 2.5rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
+  color: #bac6d2;
+  font-size: 0.8rem;
+}
+
+.statusDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #5eead4;
+  box-shadow: 0 0 1rem rgba(94, 234, 212, 0.7);
+}
+
