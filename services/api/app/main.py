@@ -14,8 +14,11 @@ from app.domain.repositories import (
     WorkspaceNotFoundError,
 )
 from app.ingestion.workspaces import WorkspaceStore
+from app.indexing.embeddings import FeatureHashEmbedder
+from app.indexing.store import RepositoryIndexStore
 from app.parsing.registry import ParserRegistry
 from app.services.repository_ingestion import RepositoryIngestionService
+from app.services.repository_indexing import RepositoryIndexingService
 from app.services.repository_parsing import RepositoryParsingService
 
 
@@ -25,10 +28,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         ttl_seconds=runtime_settings.repository_workspace_ttl_seconds,
         temp_root=runtime_settings.repository_temp_root,
     )
+    indexes = RepositoryIndexStore()
+    parsers = ParserRegistry()
+    parsing_service = RepositoryParsingService(runtime_settings, workspaces, parsers)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
         yield
+        indexes.close()
         workspaces.close()
 
     application = FastAPI(
@@ -46,10 +53,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["Content-Type", "Authorization"],
     )
     application.state.repository_ingestion = RepositoryIngestionService(runtime_settings, workspaces)
-    application.state.repository_parsing = RepositoryParsingService(
-        runtime_settings,
+    application.state.repository_parsing = parsing_service
+    application.state.repository_indexing = RepositoryIndexingService(
         workspaces,
-        ParserRegistry(),
+        parsing_service,
+        parsers,
+        indexes,
+        FeatureHashEmbedder(),
     )
     application.include_router(health_router)
     application.include_router(repositories_router)

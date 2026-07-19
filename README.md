@@ -1,6 +1,6 @@
 # WTF Does This Repo Do?
 
-An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. The project currently supports secure repository ingestion and temporary workspace management. Source-code parsing is not implemented yet.
+An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. The backend currently supports secure repository ingestion, Tree-sitter source parsing, dependency graph construction, code chunking, and an ephemeral local vector index. Dashboard visualization and AI features are not implemented yet.
 
 ## Prerequisites
 
@@ -64,7 +64,23 @@ Parse the supported source files in an active workspace:
 curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/parse
 ```
 
-The response contains normalized file metadata and discovered functions, methods, classes, interfaces, and type aliases with source locations. Python, JavaScript, TypeScript, and TSX are currently supported. Dependency extraction and indexing are intentionally deferred to the next phase.
+The response contains normalized file metadata and discovered functions, methods, classes, interfaces, and type aliases with source locations. Python, JavaScript, TypeScript, and TSX are currently supported.
+
+## Index a parsed repository
+
+Build or replace the in-memory index for an active workspace:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/index
+```
+
+Retrieve the current index without rebuilding it:
+
+```bash
+curl http://localhost:8000/api/v1/repositories/WORKSPACE_ID/index
+```
+
+The index contains normalized metadata, resolved local imports, external-module references, conservative internal call edges, graph nodes and edges, symbol-aware code chunks, and deterministic local embeddings. Indexes expire and are deleted with their repository workspace. The feature-hashing embedding adapter provides local vector indexing without sending code to an external service; AI-backed retrieval remains a later phase.
 
 The web app provides a form for the same public GitHub ingestion flow. Interactive API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
