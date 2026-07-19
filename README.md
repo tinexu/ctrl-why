@@ -1,6 +1,6 @@
 # WTF Does This Repo Do?
 
-An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. The backend currently supports secure repository ingestion, Tree-sitter source parsing, dependency graph construction, code chunking, and an ephemeral local vector index. Dashboard visualization and AI features are not implemented yet.
+An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. It currently supports secure repository ingestion, Tree-sitter source parsing, dependency graph construction, code chunking, an ephemeral local vector index, and an interactive repository dashboard. AI features are not implemented yet.
 
 ## Prerequisites
 
@@ -96,6 +96,8 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+Submit a public GitHub URL to import and index the repository. When indexing completes, the dashboard displays a hierarchical source tree, a structural repository overview, an architecture-level import graph, and a detailed symbol relationship graph. The overview is derived from static metadata; it is not AI-generated.
 
 ## Test and build
 

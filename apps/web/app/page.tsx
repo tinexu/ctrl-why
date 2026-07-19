@@ -2,44 +2,30 @@
 
 import { FormEvent, useState } from "react";
 
+import { deleteRepository, importGitHubRepository, indexRepository } from "@/lib/api";
+import type { RepositoryIndex, RepositoryWorkspace } from "@/lib/repository-types";
+import { RepositoryDashboard } from "@/features/repository-dashboard/RepositoryDashboard";
 import styles from "./page.module.css";
-
-type RepositoryWorkspace = {
-  id: string;
-  name: string;
-  source_type: "github" | "upload";
-  source_reference: string;
-  created_at: string;
-  expires_at: string;
-  file_count: number;
-  total_bytes: number;
-};
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export default function Home() {
   const [url, setUrl] = useState("");
   const [repository, setRepository] = useState<RepositoryWorkspace | null>(null);
+  const [index, setIndex] = useState<RepositoryIndex | null>(null);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [stage, setStage] = useState<"idle" | "importing" | "indexing">("idle");
 
   async function ingestRepository(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     setRepository(null);
-    setLoading(true);
+    setIndex(null);
+    setStage("importing");
 
     try {
-      const response = await fetch(`${apiUrl}/api/v1/repositories/github`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ repository_url: url }),
-      });
-      const body = await response.json();
-      if (!response.ok) {
-        throw new Error(body.detail ?? "The repository could not be imported.");
-      }
-      setRepository(body);
+      const importedRepository = await importGitHubRepository(url);
+      setRepository(importedRepository);
+      setStage("indexing");
+      setIndex(await indexRepository(importedRepository.id));
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -47,8 +33,20 @@ export default function Home() {
           : "The API could not be reached. Is it running?",
       );
     } finally {
-      setLoading(false);
+      setStage("idle");
     }
+  }
+
+  async function reset() {
+    if (repository) await deleteRepository(repository.id).catch(() => undefined);
+    setRepository(null);
+    setIndex(null);
+    setError("");
+    setUrl("");
+  }
+
+  if (repository && index) {
+    return <RepositoryDashboard repository={repository} index={index} onReset={reset} />;
   }
 
   return (
@@ -74,20 +72,20 @@ export default function Home() {
               type="url"
               value={url}
             />
-            <button className={styles.button} disabled={loading} type="submit">
-              {loading ? "Importing…" : "Import repo"}
+            <button className={styles.button} disabled={stage !== "idle"} type="submit">
+              {stage === "importing" ? "Importing…" : stage === "indexing" ? "Analyzing…" : "Analyze repo"}
             </button>
           </div>
         </form>
 
         {error && <p className={styles.error}>{error}</p>}
 
-        {repository && (
+        {repository && !index && (
           <article className={styles.card}>
             <p className={styles.cardLabel}>Repository imported</p>
             <h2 className={styles.cardTitle}>{repository.name}</h2>
             <p className={styles.cardDescription}>
-              Ready for analysis in temporary workspace {repository.id}.
+              {stage === "indexing" ? "Parsing files and building the dependency index…" : "Analysis could not be completed."}
             </p>
             <dl className={styles.metadata}>
               <div><dt>Source</dt><dd>GitHub</dd></div>
