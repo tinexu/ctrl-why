@@ -79,3 +79,20 @@ export type RepositoryIndex = {
   };
 };
 
+export type RepositorySearchResult = {
+  chunk_id: string;
+  path: string;
+  symbol: string | null;
+  symbol_kind: string | null;
+  start_line: number;
+  end_line: number;
+  excerpt: string;
+  score: number;
+  reason: string;
+};
+
+export type RepositorySearchResponse = {
+  workspace_id: string;
+  query: string;
+  results: RepositorySearchResult[];
+};

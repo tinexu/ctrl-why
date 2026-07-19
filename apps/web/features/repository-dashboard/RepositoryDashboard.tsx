@@ -3,6 +3,7 @@
 import type { RepositoryIndex, RepositoryWorkspace } from "@/lib/repository-types";
 
 import { DependencyGraph } from "./DependencyGraph";
+import { FeatureSearch } from "./FeatureSearch";
 import { FileTree } from "./FileTree";
 import { RepositoryOverview } from "./RepositoryOverview";
 import styles from "./dashboard.module.css";
@@ -41,6 +42,7 @@ export function RepositoryDashboard({
         </aside>
 
         <div className={styles.mainColumn}>
+          <FeatureSearch workspaceId={repository.id} />
           <RepositoryOverview index={index} />
           <DependencyGraph index={index} />
         </div>
@@ -48,4 +50,3 @@ export function RepositoryDashboard({
     </main>
   );
 }
-

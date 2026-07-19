@@ -4,11 +4,11 @@ from fastapi import APIRouter, File, Request, Response, UploadFile, status
 from starlette.concurrency import run_in_threadpool
 
 from app.domain.repositories import GitHubIngestionRequest, RepositoryWorkspace
+from app.domain.indexing import RepositoryIndex, RepositorySearchRequest, RepositorySearchResponse
 from app.domain.parsing import RepositoryParseResult
 from app.services.repository_ingestion import RepositoryIngestionService
 from app.services.repository_indexing import RepositoryIndexingService
 from app.services.repository_parsing import RepositoryParsingService
-from app.domain.indexing import RepositoryIndex
 
 router = APIRouter(prefix="/api/v1/repositories", tags=["repositories"])
 
@@ -51,6 +51,15 @@ async def index_repository(workspace_id: str, request: Request) -> RepositoryInd
 @router.get("/{workspace_id}/index", response_model=RepositoryIndex)
 def get_repository_index(workspace_id: str, request: Request) -> RepositoryIndex:
     return get_indexing_service(request).get(workspace_id)
+
+
+@router.post("/{workspace_id}/search", response_model=RepositorySearchResponse)
+def search_repository(
+    workspace_id: str,
+    payload: RepositorySearchRequest,
+    request: Request,
+) -> RepositorySearchResponse:
+    return get_indexing_service(request).search(workspace_id, payload.query, payload.limit)
 
 
 @router.get("/{workspace_id}", response_model=RepositoryWorkspace)

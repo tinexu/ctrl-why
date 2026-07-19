@@ -1,4 +1,8 @@
-import type { RepositoryIndex, RepositoryWorkspace } from "./repository-types";
+import type {
+  RepositoryIndex,
+  RepositorySearchResponse,
+  RepositoryWorkspace,
+} from "./repository-types";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -30,3 +34,13 @@ export function deleteRepository(workspaceId: string): Promise<void> {
   return request(`/api/v1/repositories/${workspaceId}`, { method: "DELETE" });
 }
 
+export function searchRepository(
+  workspaceId: string,
+  query: string,
+  limit = 5,
+): Promise<RepositorySearchResponse> {
+  return request(`/api/v1/repositories/${workspaceId}/search`, {
+    method: "POST",
+    body: JSON.stringify({ query, limit }),
+  });
+}

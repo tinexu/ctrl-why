@@ -82,6 +82,18 @@ curl http://localhost:8000/api/v1/repositories/WORKSPACE_ID/index
 
 The index contains normalized metadata, resolved local imports, external-module references, conservative internal call edges, graph nodes and edges, symbol-aware code chunks, and deterministic local embeddings. Indexes expire and are deleted with their repository workspace. The feature-hashing embedding adapter provides local vector indexing without sending code to an external service; AI-backed retrieval remains a later phase.
 
+## Find where a feature is implemented
+
+Search an indexed repository with a natural-language description:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/search \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"Where is authentication handled?","limit":5}'
+```
+
+Results include ranked file paths, symbols, line ranges, relevance scores, match reasons, and bounded source excerpts. The dashboard exposes the same workflow through its **Feature finder** panel.
+
 The web app provides a form for the same public GitHub ingestion flow. Interactive API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 ## Run the web app

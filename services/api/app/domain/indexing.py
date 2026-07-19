@@ -67,3 +67,26 @@ class RepositoryIndex(BaseModel):
     edges: list[GraphEdge]
     chunks: list[CodeChunk]
     stats: IndexStats
+
+
+class RepositorySearchRequest(BaseModel):
+    query: str = Field(min_length=2, max_length=300)
+    limit: int = Field(default=5, ge=1, le=20)
+
+
+class RepositorySearchResult(BaseModel):
+    chunk_id: str
+    path: str
+    symbol: str | None = None
+    symbol_kind: str | None = None
+    start_line: int = Field(ge=1)
+    end_line: int = Field(ge=1)
+    excerpt: str
+    score: float = Field(ge=0, le=1)
+    reason: str
+
+
+class RepositorySearchResponse(BaseModel):
+    workspace_id: str
+    query: str
+    results: list[RepositorySearchResult]

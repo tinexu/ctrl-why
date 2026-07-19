@@ -41,6 +41,10 @@ def test_index_builds_graph_chunks_and_cached_result(tmp_path: Path) -> None:
         response = client.post(f"/api/v1/repositories/{workspace_id}/index")
         cached = client.get(f"/api/v1/repositories/{workspace_id}/index")
         rebuilt = client.post(f"/api/v1/repositories/{workspace_id}/index")
+        search = client.post(
+            f"/api/v1/repositories/{workspace_id}/search",
+            json={"query": "Where is authentication token verification handled?", "limit": 3},
+        )
         internal_index = app.state.repository_indexing.get(workspace_id)
         internal_has_import_chunk = any("from pkg.auth import verify" in chunk.content for chunk in internal_index.chunks)
         deleted = client.delete(f"/api/v1/repositories/{workspace_id}")
@@ -48,6 +52,7 @@ def test_index_builds_graph_chunks_and_cached_result(tmp_path: Path) -> None:
 
     assert response.status_code == 200
     assert cached.status_code == 200
+    assert search.status_code == 200
     result = response.json()
     assert result["stats"]["file_count"] == 5
     assert result["stats"]["symbol_count"] == 4
@@ -66,6 +71,13 @@ def test_index_builds_graph_chunks_and_cached_result(tmp_path: Path) -> None:
     assert cached.json() == result
     assert [chunk["id"] for chunk in rebuilt.json()["chunks"]] == [chunk["id"] for chunk in result["chunks"]]
     assert internal_has_import_chunk
+    search_result = search.json()
+    assert search_result["query"] == "Where is authentication token verification handled?"
+    assert len(search_result["results"]) == 3
+    assert search_result["results"][0]["path"] in {"pkg/auth.py", "pkg/service.py"}
+    assert search_result["results"][0]["symbol"] in {"verify", "authenticate"}
+    assert "token" in search_result["results"][0]["excerpt"]
+    assert 0 <= search_result["results"][0]["score"] <= 1
     assert deleted.status_code == 204
     assert missing_after_delete.status_code == 404
 
