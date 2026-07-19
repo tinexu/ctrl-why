@@ -4,13 +4,19 @@ from fastapi import APIRouter, File, Request, Response, UploadFile, status
 from starlette.concurrency import run_in_threadpool
 
 from app.domain.repositories import GitHubIngestionRequest, RepositoryWorkspace
+from app.domain.parsing import RepositoryParseResult
 from app.services.repository_ingestion import RepositoryIngestionService
+from app.services.repository_parsing import RepositoryParsingService
 
 router = APIRouter(prefix="/api/v1/repositories", tags=["repositories"])
 
 
 def get_service(request: Request) -> RepositoryIngestionService:
     return request.app.state.repository_ingestion
+
+
+def get_parsing_service(request: Request) -> RepositoryParsingService:
+    return request.app.state.repository_parsing
 
 
 @router.post("/github", response_model=RepositoryWorkspace, status_code=status.HTTP_201_CREATED)
@@ -26,6 +32,11 @@ async def ingest_upload(
     return await get_service(request).ingest_upload(repository)
 
 
+@router.post("/{workspace_id}/parse", response_model=RepositoryParseResult)
+async def parse_repository(workspace_id: str, request: Request) -> RepositoryParseResult:
+    return await run_in_threadpool(get_parsing_service(request).parse, workspace_id)
+
+
 @router.get("/{workspace_id}", response_model=RepositoryWorkspace)
 def get_repository(workspace_id: str, request: Request) -> RepositoryWorkspace:
     return get_service(request).get(workspace_id)
@@ -35,4 +46,3 @@ def get_repository(workspace_id: str, request: Request) -> RepositoryWorkspace:
 def delete_repository(workspace_id: str, request: Request) -> Response:
     get_service(request).delete(workspace_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-

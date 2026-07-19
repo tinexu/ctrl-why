@@ -14,7 +14,9 @@ from app.domain.repositories import (
     WorkspaceNotFoundError,
 )
 from app.ingestion.workspaces import WorkspaceStore
+from app.parsing.registry import ParserRegistry
 from app.services.repository_ingestion import RepositoryIngestionService
+from app.services.repository_parsing import RepositoryParsingService
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -44,6 +46,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["Content-Type", "Authorization"],
     )
     application.state.repository_ingestion = RepositoryIngestionService(runtime_settings, workspaces)
+    application.state.repository_parsing = RepositoryParsingService(
+        runtime_settings,
+        workspaces,
+        ParserRegistry(),
+    )
     application.include_router(health_router)
     application.include_router(repositories_router)
 

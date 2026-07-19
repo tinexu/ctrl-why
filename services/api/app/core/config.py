@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     repository_max_expanded_bytes: int = Field(default=100 * 1024 * 1024, gt=0)
     repository_max_files: int = Field(default=5000, gt=0)
     repository_clone_timeout_seconds: int = Field(default=120, gt=0)
+    repository_max_source_file_bytes: int = Field(default=512 * 1024, gt=0)
     repository_temp_root: str | None = None
 
     @property
