@@ -27,7 +27,14 @@ export function DependencyGraph({ index }: { index: RepositoryIndex }) {
       <div className={styles.graphCanvas}>
         <ReactFlow nodes={graph.nodes} edges={graph.edges} fitView minZoom={0.15} maxZoom={1.8} proOptions={{ hideAttribution: true }}>
           <Background color="#263342" gap={24} size={1} />
-          <MiniMap pannable zoomable nodeColor={(node) => node.style?.borderColor as string ?? "#5eead4"} />
+          <MiniMap
+            bgColor="#0b1119"
+            maskColor="rgba(3, 8, 14, 0.72)"
+            nodeColor={(node) => node.style?.borderColor as string ?? "#5eead4"}
+            nodeStrokeWidth={3}
+            pannable
+            zoomable
+          />
           <Controls showInteractive={false} />
         </ReactFlow>
       </div>
@@ -75,4 +82,3 @@ function buildFlowGraph(index: RepositoryIndex, view: GraphView): { nodes: Node[
 function shortLabel(label: string): string {
   return label.length > 30 ? `…${label.slice(-29)}` : label;
 }
-

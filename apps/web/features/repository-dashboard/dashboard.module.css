@@ -343,6 +343,41 @@
   height: 34rem;
 }
 
+.graphCanvas :global(.react-flow__controls) {
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 0.55rem;
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.3);
+}
+
+.graphCanvas :global(.react-flow__controls-button) {
+  border: 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  background: #111923;
+  color: #91a0af;
+}
+
+.graphCanvas :global(.react-flow__controls-button:last-child) {
+  border-bottom: 0;
+}
+
+.graphCanvas :global(.react-flow__controls-button:hover) {
+  background: #182430;
+  color: #8cf2e1;
+}
+
+.graphCanvas :global(.react-flow__controls-button svg) {
+  fill: currentColor;
+}
+
+.graphCanvas :global(.react-flow__minimap) {
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 0.65rem;
+  background: #0b1119;
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.3);
+}
+
 .nodeType {
   display: block;
   margin-bottom: 0.32rem;
@@ -383,4 +418,3 @@
   .metrics { grid-template-columns: repeat(2, 1fr); }
   .overviewDetails { grid-template-columns: 1fr; }
 }
-
