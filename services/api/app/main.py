@@ -18,6 +18,7 @@ from app.indexing.embeddings import FeatureHashEmbedder
 from app.indexing.store import RepositoryIndexStore
 from app.parsing.registry import ParserRegistry
 from app.services.repository_ingestion import RepositoryIngestionService
+from app.services.repository_chat import RepositoryChatService
 from app.services.repository_indexing import RepositoryIndexingService
 from app.services.repository_parsing import RepositoryParsingService
 
@@ -54,12 +55,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     application.state.repository_ingestion = RepositoryIngestionService(runtime_settings, workspaces)
     application.state.repository_parsing = parsing_service
-    application.state.repository_indexing = RepositoryIndexingService(
+    indexing_service = RepositoryIndexingService(
         workspaces,
         parsing_service,
         parsers,
         indexes,
         FeatureHashEmbedder(),
+    )
+    application.state.repository_indexing = indexing_service
+    application.state.repository_chat = RepositoryChatService(
+        indexing_service,
+        runtime_settings.openai_api_key,
+        runtime_settings.openai_model,
     )
     application.include_router(health_router)
     application.include_router(repositories_router)

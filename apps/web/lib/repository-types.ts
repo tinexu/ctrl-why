@@ -96,3 +96,22 @@ export type RepositorySearchResponse = {
   query: string;
   results: RepositorySearchResult[];
 };
+
+export type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export type ChatCitation = {
+  reference: number;
+  path: string;
+  start_line: number;
+  end_line: number;
+  symbol: string | null;
+};
+
+export type RepositoryChatResponse = {
+  workspace_id: string;
+  answer: string;
+  citations: ChatCitation[];
+};

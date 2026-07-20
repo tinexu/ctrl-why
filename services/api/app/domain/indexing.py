@@ -90,3 +90,27 @@ class RepositorySearchResponse(BaseModel):
     workspace_id: str
     query: str
     results: list[RepositorySearchResult]
+
+
+class ChatMessage(BaseModel):
+    role: str = Field(pattern="^(user|assistant)$")
+    content: str = Field(min_length=1, max_length=4000)
+
+
+class RepositoryChatRequest(BaseModel):
+    question: str = Field(min_length=2, max_length=1000)
+    history: list[ChatMessage] = Field(default_factory=list, max_length=10)
+
+
+class ChatCitation(BaseModel):
+    reference: int = Field(ge=1)
+    path: str
+    start_line: int = Field(ge=1)
+    end_line: int = Field(ge=1)
+    symbol: str | None = None
+
+
+class RepositoryChatResponse(BaseModel):
+    workspace_id: str
+    answer: str
+    citations: list[ChatCitation]

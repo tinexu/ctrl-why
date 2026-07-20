@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     repository_clone_timeout_seconds: int = Field(default=120, gt=0)
     repository_max_source_file_bytes: int = Field(default=512 * 1024, gt=0)
     repository_temp_root: str | None = None
+    openai_api_key: SecretStr | None = None
+    openai_model: str = "gpt-5.6-sol"
 
     @property
     def cors_origins(self) -> list[str]:

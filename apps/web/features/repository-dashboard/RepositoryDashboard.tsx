@@ -6,6 +6,7 @@ import { DependencyGraph } from "./DependencyGraph";
 import { FeatureSearch } from "./FeatureSearch";
 import { FileTree } from "./FileTree";
 import { RepositoryOverview } from "./RepositoryOverview";
+import { RepositoryChat } from "./RepositoryChat";
 import styles from "./dashboard.module.css";
 
 export function RepositoryDashboard({
@@ -42,6 +43,7 @@ export function RepositoryDashboard({
         </aside>
 
         <div className={styles.mainColumn}>
+          <RepositoryChat workspaceId={repository.id} />
           <FeatureSearch workspaceId={repository.id} />
           <RepositoryOverview index={index} />
           <DependencyGraph index={index} />

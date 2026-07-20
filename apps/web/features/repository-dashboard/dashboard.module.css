@@ -229,6 +229,83 @@
   padding: 1.4rem;
 }
 
+.chatPanel {
+  padding: 1.4rem;
+}
+
+.chatTranscript {
+  display: grid;
+  gap: 0.7rem;
+  max-height: 30rem;
+  margin-top: 1.15rem;
+  overflow-y: auto;
+}
+
+.chatEmpty {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+  border: 1px dashed rgba(148, 163, 184, 0.14);
+  border-radius: 0.7rem;
+  color: #718194;
+  font-size: 0.72rem;
+}
+
+.chatEmpty p { margin: 0 0 0.15rem; color: #9aa8b6; font-weight: 650; }
+
+.chatMessage {
+  max-width: 86%;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.chatMessage[data-role="user"] {
+  justify-self: end;
+  background: rgba(94, 234, 212, 0.07);
+}
+
+.messageAuthor { color: #7debd9; font-size: 0.64rem; text-transform: uppercase; }
+.chatMessage p { margin: 0.45rem 0 0; color: #c1ccd6; font-size: 0.78rem; line-height: 1.65; white-space: pre-wrap; }
+
+.markdownAnswer > :first-child { margin-top: 0.45rem; }
+.markdownAnswer > :last-child { margin-bottom: 0; }
+.markdownAnswer h1,
+.markdownAnswer h2,
+.markdownAnswer h3 { margin: 0.9rem 0 0.35rem; color: #e2e8f0; font-size: 0.86rem; }
+.markdownAnswer ul,
+.markdownAnswer ol { margin: 0.55rem 0; padding-left: 1.25rem; color: #c1ccd6; font-size: 0.78rem; line-height: 1.65; }
+.markdownAnswer li + li { margin-top: 0.28rem; }
+.markdownAnswer strong { color: #e4ebf1; }
+.markdownAnswer code {
+  padding: 0.1rem 0.28rem;
+  border-radius: 0.25rem;
+  background: #080d13;
+  color: #8cf2e1;
+  font-size: 0.72rem;
+}
+.markdownAnswer pre { overflow-x: auto; padding: 0.75rem; border-radius: 0.5rem; background: #080d13; }
+.markdownAnswer pre code { padding: 0; color: #c1ccd6; }
+
+.chatCitations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+}
+
+.chatCitations code {
+  padding: 0.28rem 0.42rem;
+  border-radius: 0.35rem;
+  background: #080d13;
+  color: #8cf2e1;
+  font-size: 0.6rem;
+}
+
+.chatThinking { margin: 0; color: #7f8d9d; font-size: 0.72rem; }
+.chatForm { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1); }
+
 .searchIntro h2 {
   margin: 0.2rem 0 0;
   font-size: 1.2rem;

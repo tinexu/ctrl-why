@@ -1,10 +1,21 @@
 from typing import Annotated
 
-from fastapi import APIRouter, File, Request, Response, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, Request, Response, UploadFile, status
 from starlette.concurrency import run_in_threadpool
 
 from app.domain.repositories import GitHubIngestionRequest, RepositoryWorkspace
-from app.domain.indexing import RepositoryIndex, RepositorySearchRequest, RepositorySearchResponse
+from app.domain.indexing import (
+    RepositoryChatRequest,
+    RepositoryChatResponse,
+    RepositoryIndex,
+    RepositorySearchRequest,
+    RepositorySearchResponse,
+)
+from app.services.repository_chat import (
+    ChatConfigurationError,
+    ChatProviderError,
+    RepositoryChatService,
+)
 from app.domain.parsing import RepositoryParseResult
 from app.services.repository_ingestion import RepositoryIngestionService
 from app.services.repository_indexing import RepositoryIndexingService
@@ -23,6 +34,10 @@ def get_parsing_service(request: Request) -> RepositoryParsingService:
 
 def get_indexing_service(request: Request) -> RepositoryIndexingService:
     return request.app.state.repository_indexing
+
+
+def get_chat_service(request: Request) -> RepositoryChatService:
+    return request.app.state.repository_chat
 
 
 @router.post("/github", response_model=RepositoryWorkspace, status_code=status.HTTP_201_CREATED)
@@ -60,6 +75,25 @@ def search_repository(
     request: Request,
 ) -> RepositorySearchResponse:
     return get_indexing_service(request).search(workspace_id, payload.query, payload.limit)
+
+
+@router.post("/{workspace_id}/chat", response_model=RepositoryChatResponse)
+async def chat_with_repository(
+    workspace_id: str,
+    payload: RepositoryChatRequest,
+    request: Request,
+) -> RepositoryChatResponse:
+    try:
+        return await run_in_threadpool(
+            get_chat_service(request).ask,
+            workspace_id,
+            payload.question,
+            payload.history,
+        )
+    except ChatConfigurationError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
+    except ChatProviderError as error:
+        raise HTTPException(status_code=502, detail=str(error)) from error
 
 
 @router.get("/{workspace_id}", response_model=RepositoryWorkspace)

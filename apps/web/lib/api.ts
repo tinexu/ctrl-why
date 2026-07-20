@@ -1,4 +1,6 @@
 import type {
+  ChatMessage,
+  RepositoryChatResponse,
   RepositoryIndex,
   RepositorySearchResponse,
   RepositoryWorkspace,
@@ -42,5 +44,16 @@ export function searchRepository(
   return request(`/api/v1/repositories/${workspaceId}/search`, {
     method: "POST",
     body: JSON.stringify({ query, limit }),
+  });
+}
+
+export function chatWithRepository(
+  workspaceId: string,
+  question: string,
+  history: ChatMessage[],
+): Promise<RepositoryChatResponse> {
+  return request(`/api/v1/repositories/${workspaceId}/chat`, {
+    method: "POST",
+    body: JSON.stringify({ question, history }),
   });
 }
