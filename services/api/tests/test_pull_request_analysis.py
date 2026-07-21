@@ -78,7 +78,9 @@ def test_analyzes_diff_with_graph_impact_security_and_ai(tmp_path: Path) -> None
 
 
 def test_analysis_works_without_openai_key_and_rejects_invalid_diff(tmp_path: Path) -> None:
-    app = create_app(Settings(app_env="test", repository_temp_root=str(tmp_path)))
+    app = create_app(
+        Settings(app_env="test", repository_temp_root=str(tmp_path), _env_file=None)
+    )
 
     with TestClient(app) as client:
         workspace_id = indexed_workspace(client)

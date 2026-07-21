@@ -84,7 +84,9 @@ def test_ci_analysis_retrieves_files_and_enhances_explanation(tmp_path: Path) ->
 
 
 def test_ci_analysis_has_deterministic_fallback_and_validates_size(tmp_path: Path) -> None:
-    app = create_app(Settings(app_env="test", repository_temp_root=str(tmp_path)))
+    app = create_app(
+        Settings(app_env="test", repository_temp_root=str(tmp_path), _env_file=None)
+    )
 
     with TestClient(app) as client:
         workspace_id = indexed_workspace(client)
