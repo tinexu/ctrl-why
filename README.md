@@ -267,13 +267,13 @@ Use public repositories that you are comfortable sending to the configured AI pr
 
 The project is designed for current desktop browsers. Local development has been tested on macOS; the Node.js and Python services are also suitable for Linux environments with the listed prerequisites.
 
-Judges can follow **Environment setup** and **Run locally**. Before submission, replace this placeholder with the hosted demo URL so judges can test without rebuilding from source:
+Judges can follow **Environment setup** and **Run locally**, or test the hosted demo without rebuilding the project:
 
 ```text
-Demo URL: add before submission
+Demo URL: https://ctrl-why.vercel.app
 ```
 
-No test account is required because the current product accepts public GitHub repositories.
+No test account is required because the current product accepts public GitHub repositories. The hosted backend runs on Render's free tier, so the first request after a period of inactivity can take up to approximately one minute while the service wakes.
 
 ## Recommended demo flow
 
