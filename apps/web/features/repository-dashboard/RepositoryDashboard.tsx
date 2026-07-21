@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import type { RepositoryIndex, RepositoryWorkspace } from "@/lib/repository-types";
 
 import { DependencyGraph } from "./DependencyGraph";
@@ -10,6 +12,15 @@ import { PullRequestAnalysis } from "./PullRequestAnalysis";
 import { CICopilot } from "./CICopilot";
 import styles from "./dashboard.module.css";
 
+type DashboardView = "explore" | "ask" | "review" | "ci";
+
+const VIEWS: Array<{ id: DashboardView; label: string; description: string }> = [
+  { id: "explore", label: "Explore", description: "Architecture and dependencies" },
+  { id: "ask", label: "Ask", description: "Grounded repository chat" },
+  { id: "review", label: "Review change", description: "Diff impact and risk" },
+  { id: "ci", label: "Debug CI", description: "Pipeline failure analysis" },
+];
+
 export function RepositoryDashboard({
   repository,
   index,
@@ -19,6 +30,8 @@ export function RepositoryDashboard({
   index: RepositoryIndex;
   onReset: () => Promise<void>;
 }) {
+  const [view, setView] = useState<DashboardView>("explore");
+
   return (
     <main className={styles.dashboard}>
       <header className={styles.topbar}>
@@ -44,11 +57,34 @@ export function RepositoryDashboard({
         </aside>
 
         <div className={styles.mainColumn}>
-          <RepositoryChat workspaceId={repository.id} />
-          <RepositoryOverview index={index} />
-          <DependencyGraph index={index} />
-          <PullRequestAnalysis workspaceId={repository.id} />
-          <CICopilot workspaceId={repository.id} />
+          <nav aria-label="Repository tools" className={styles.toolNavigation}>
+            {VIEWS.map((item) => (
+              <button
+                aria-current={view === item.id ? "page" : undefined}
+                className={view === item.id ? styles.activeTool : undefined}
+                key={item.id}
+                onClick={() => setView(item.id)}
+                type="button"
+              >
+                <strong>{item.label}</strong>
+                <span>{item.description}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className={styles.viewPane} hidden={view !== "explore"}>
+            <RepositoryOverview index={index} />
+            <DependencyGraph index={index} />
+          </div>
+          <div className={styles.viewPane} hidden={view !== "ask"}>
+            <RepositoryChat workspaceId={repository.id} />
+          </div>
+          <div className={styles.viewPane} hidden={view !== "review"}>
+            <PullRequestAnalysis workspaceId={repository.id} />
+          </div>
+          <div className={styles.viewPane} hidden={view !== "ci"}>
+            <CICopilot workspaceId={repository.id} />
+          </div>
         </div>
       </div>
     </main>

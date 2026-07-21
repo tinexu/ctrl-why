@@ -44,6 +44,7 @@ export function RepositoryChat({ workspaceId }: { workspaceId: string }) {
       ]);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "The AI could not answer right now.");
+      setQuestion(trimmedQuestion);
     } finally {
       setLoading(false);
     }
@@ -109,7 +110,7 @@ export function RepositoryChat({ workspaceId }: { workspaceId: string }) {
         {loading && <p className={styles.chatThinking}>Reading the relevant code…</p>}
       </div>
 
-      {error && <p className={styles.searchError}>{error}</p>}
+      {error && <p className={styles.searchError} role="alert">{error} Your question was restored so you can retry.</p>}
       <form className={styles.chatForm} onSubmit={submitQuestion}>
         <label className={styles.searchLabel} htmlFor="repository-question">Question about this repository</label>
         <div className={styles.searchInputRow}>

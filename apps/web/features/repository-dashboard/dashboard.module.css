@@ -225,6 +225,58 @@
   gap: 1rem;
 }
 
+.toolNavigation {
+  display: grid;
+  position: sticky;
+  z-index: 20;
+  top: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.3rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 0.8rem;
+  background: rgba(8, 13, 20, 0.94);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(14px);
+}
+
+.toolNavigation button {
+  display: grid;
+  min-width: 0;
+  gap: 0.18rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+  background: transparent;
+  color: #8190a0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.toolNavigation button:hover {
+  background: rgba(255, 255, 255, 0.025);
+  color: #d7e0e8;
+}
+
+.toolNavigation .activeTool {
+  border-color: rgba(94, 234, 212, 0.2);
+  background: rgba(94, 234, 212, 0.075);
+  color: #dffbf6;
+}
+
+.toolNavigation strong { overflow: hidden; font-size: 0.7rem; text-overflow: ellipsis; white-space: nowrap; }
+.toolNavigation span { overflow: hidden; color: #617183; font-size: 0.55rem; text-overflow: ellipsis; white-space: nowrap; }
+.toolNavigation .activeTool span { color: #6caea4; }
+
+.viewPane {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.viewPane[hidden] { display: none; }
+
 .prPanel {
   padding: 1.4rem;
 }
@@ -1355,4 +1407,5 @@
   .ciEvidenceGrid { grid-template-columns: 1fr; }
   .ciActions { align-items: stretch; flex-direction: column; }
   .ciActions button { width: 100%; }
+  .toolNavigation { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

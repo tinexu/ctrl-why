@@ -45,6 +45,19 @@ export default function Home() {
     setUrl("");
   }
 
+  async function retryIndexing() {
+    if (!repository) return;
+    setError("");
+    setStage("indexing");
+    try {
+      setIndex(await indexRepository(repository.id));
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Repository analysis failed.");
+    } finally {
+      setStage("idle");
+    }
+  }
+
   if (repository && index) {
     return <RepositoryDashboard repository={repository} index={index} onReset={reset} />;
   }
@@ -58,13 +71,14 @@ export default function Home() {
           Start with a public GitHub repository. We’ll import it into a temporary, isolated workspace for analysis.
         </p>
 
-        <form className={styles.form} onSubmit={ingestRepository}>
+        <form aria-busy={stage !== "idle"} className={styles.form} onSubmit={ingestRepository}>
           <label className={styles.label} htmlFor="repository-url">
             GitHub repository URL
           </label>
           <div className={styles.inputRow}>
             <input
               className={styles.input}
+              disabled={stage !== "idle"}
               id="repository-url"
               onChange={(event) => setUrl(event.target.value)}
               placeholder="https://github.com/owner/repository"
@@ -78,14 +92,16 @@ export default function Home() {
           </div>
         </form>
 
-        {error && <p className={styles.error}>{error}</p>}
+        {error && <p className={styles.error} role="alert"><strong>Analysis stopped.</strong>{error}</p>}
 
-        {repository && !index && (
+        {stage !== "idle" && <AnalysisProgress repository={repository} stage={stage} />}
+
+        {repository && !index && stage === "idle" && (
           <article className={styles.card}>
-            <p className={styles.cardLabel}>Repository imported</p>
+            <p className={styles.cardLabel}>Import complete · analysis incomplete</p>
             <h2 className={styles.cardTitle}>{repository.name}</h2>
             <p className={styles.cardDescription}>
-              {stage === "indexing" ? "Parsing files and building the dependency index…" : "Analysis could not be completed."}
+              The repository is still available in its temporary workspace. Retry indexing without downloading it again.
             </p>
             <dl className={styles.metadata}>
               <div><dt>Source</dt><dd>GitHub</dd></div>
@@ -93,10 +109,49 @@ export default function Home() {
               <div><dt>Size</dt><dd>{formatBytes(repository.total_bytes)}</dd></div>
               <div><dt>Expires</dt><dd>{new Date(repository.expires_at).toLocaleTimeString()}</dd></div>
             </dl>
+            <div className={styles.recoveryActions}>
+              <button className={styles.button} onClick={() => void retryIndexing()} type="button">Retry analysis</button>
+              <button className={styles.secondaryButton} onClick={() => void reset()} type="button">Start over</button>
+            </div>
           </article>
         )}
       </section>
     </main>
+  );
+}
+
+function AnalysisProgress({
+  repository,
+  stage,
+}: {
+  repository: RepositoryWorkspace | null;
+  stage: "importing" | "indexing";
+}) {
+  return (
+    <article aria-live="polite" className={styles.progressCard}>
+      <div className={styles.progressHeading}>
+        <div>
+          <p className={styles.cardLabel}>Analysis in progress</p>
+          <h2>{stage === "importing" ? "Creating a safe workspace" : `Understanding ${repository?.name ?? "the repository"}`}</h2>
+        </div>
+        <span className={styles.spinner} aria-hidden="true" />
+      </div>
+      <ol className={styles.progressSteps}>
+        <ProgressStep active={stage === "importing"} complete={stage === "indexing"} label="Import repository" detail="Download, validate, and remove Git metadata" />
+        <ProgressStep active={stage === "indexing"} complete={false} label="Parse and index" detail="Extract symbols, dependencies, calls, and searchable chunks" />
+        <ProgressStep active={false} complete={false} label="Open workspace" detail="Prepare the explorer, graph, chat, and review tools" />
+      </ol>
+      <p className={styles.progressNote}>Large repositories can take up to two minutes. Repository code is never executed.</p>
+    </article>
+  );
+}
+
+function ProgressStep({ active, complete, label, detail }: { active: boolean; complete: boolean; label: string; detail: string }) {
+  return (
+    <li data-state={complete ? "complete" : active ? "active" : "pending"}>
+      <span>{complete ? "✓" : active ? "•" : ""}</span>
+      <div><strong>{label}</strong><small>{detail}</small></div>
+    </li>
   );
 }
 

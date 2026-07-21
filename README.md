@@ -160,6 +160,16 @@ make test
 make build
 ```
 
+## Recommended demo flow
+
+1. Submit a small public Python or TypeScript repository and show the import/index progress timeline.
+2. In **Explore**, inspect the structural overview and select an import or call relationship in the graph to show its underlying files and lines.
+3. In **Ask**, ask a repository-specific question and expand **Relevant code** to show that the answer is retrieval-grounded.
+4. In **Review change**, paste a real `git diff` from the analyzed repository and walk through affected dependents, risk, security findings, tests, and evidence.
+5. In **Debug CI**, paste a failed test or type-check log that mentions an indexed path and compare the log evidence with retrieved repository evidence.
+
+The four dashboard views remain mounted while switching, so chat history and pasted-analysis results are preserved during the demo. If indexing fails after import, use **Retry analysis** to reuse the existing temporary workspace.
+
 ## Current structure
 
 ```text

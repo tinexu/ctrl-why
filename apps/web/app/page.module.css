@@ -89,9 +89,18 @@
 }
 
 .error {
+  display: grid;
+  gap: 0.25rem;
   margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(248, 113, 113, 0.22);
+  border-radius: 0.7rem;
+  background: rgba(248, 113, 113, 0.055);
   color: #fca5a5;
+  font-size: 0.8rem;
 }
+
+.error strong { color: #fecaca; font-size: 0.68rem; text-transform: uppercase; }
 
 .card {
   margin-top: 2rem;
@@ -113,9 +122,113 @@
 
 .metadata {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin: 1.5rem 0 0;
+}
+
+.progressCard {
+  margin-top: 2rem;
+  padding: 1.4rem;
+  border: 1px solid rgba(94, 234, 212, 0.18);
+  border-radius: 1rem;
+  background: rgba(11, 17, 25, 0.86);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.2);
+}
+
+.progressHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.progressHeading h2 { margin: 0; font-size: 1.25rem; }
+
+.spinner {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex: none;
+  border: 2px solid rgba(94, 234, 212, 0.18);
+  border-top-color: #5eead4;
+  border-radius: 50%;
+  animation: spin 0.85s linear infinite;
+}
+
+.progressSteps {
+  display: grid;
+  gap: 0;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progressSteps li {
+  display: grid;
+  position: relative;
+  grid-template-columns: 1.6rem minmax(0, 1fr);
+  gap: 0.75rem;
+  min-height: 3.6rem;
+  color: #526171;
+}
+
+.progressSteps li:not(:last-child)::after {
+  position: absolute;
+  top: 1.55rem;
+  bottom: 0.25rem;
+  left: 0.75rem;
+  width: 1px;
+  background: rgba(148, 163, 184, 0.14);
+  content: "";
+}
+
+.progressSteps li > span {
+  display: grid;
+  z-index: 1;
+  width: 1.55rem;
+  height: 1.55rem;
+  place-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 50%;
+  background: #0b1119;
+  font-size: 0.7rem;
+}
+
+.progressSteps li[data-state="active"] > span {
+  border-color: #5eead4;
+  color: #5eead4;
+  box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.07);
+}
+
+.progressSteps li[data-state="complete"] > span {
+  border-color: rgba(94, 234, 212, 0.45);
+  background: rgba(94, 234, 212, 0.1);
+  color: #5eead4;
+}
+
+.progressSteps li[data-state="active"] strong,
+.progressSteps li[data-state="complete"] strong { color: #dbe6ec; }
+.progressSteps li div { display: grid; align-content: start; gap: 0.25rem; padding-top: 0.1rem; }
+.progressSteps strong { font-size: 0.75rem; }
+.progressSteps small { font-size: 0.65rem; line-height: 1.4; }
+.progressNote { margin: 0.2rem 0 0 2.35rem; color: #607183; font-size: 0.65rem; }
+
+.recoveryActions { display: flex; gap: 0.65rem; margin-top: 1.25rem; }
+.secondaryButton {
+  padding: 0.9rem 1.2rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 0.75rem;
+  background: transparent;
+  color: #aebac7;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
 }
 
 .metadata dt {
@@ -137,4 +250,7 @@
   .metadata {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .main { padding: 1.25rem; }
+  .recoveryActions { flex-direction: column; }
 }

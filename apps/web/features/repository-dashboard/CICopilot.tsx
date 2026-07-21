@@ -65,7 +65,7 @@ export function CICopilot({ workspaceId }: { workspaceId: string }) {
           </button>
         </div>
       </form>
-      {error && <p className={styles.searchError}>{error}</p>}
+      {error && <p className={styles.searchError} role="alert">{error}</p>}
 
       {analysis && (
         <div className={styles.ciResults}>
