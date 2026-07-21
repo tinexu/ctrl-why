@@ -7,6 +7,7 @@ import { FileTree } from "./FileTree";
 import { RepositoryOverview } from "./RepositoryOverview";
 import { RepositoryChat } from "./RepositoryChat";
 import { PullRequestAnalysis } from "./PullRequestAnalysis";
+import { CICopilot } from "./CICopilot";
 import styles from "./dashboard.module.css";
 
 export function RepositoryDashboard({
@@ -47,6 +48,7 @@ export function RepositoryDashboard({
           <RepositoryOverview index={index} />
           <DependencyGraph index={index} />
           <PullRequestAnalysis workspaceId={repository.id} />
+          <CICopilot workspaceId={repository.id} />
         </div>
       </div>
     </main>

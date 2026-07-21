@@ -19,6 +19,8 @@ from app.services.repository_chat import (
 from app.domain.parsing import RepositoryParseResult
 from app.domain.pull_requests import PullRequestAnalysisRequest, PullRequestAnalysisResponse
 from app.services.pull_request_analysis import PullRequestAnalysisService
+from app.domain.ci_analysis import CIAnalysisRequest, CIAnalysisResponse
+from app.services.ci_analysis import CIAnalysisService
 from app.services.repository_ingestion import RepositoryIngestionService
 from app.services.repository_indexing import RepositoryIndexingService
 from app.services.repository_parsing import RepositoryParsingService
@@ -44,6 +46,10 @@ def get_chat_service(request: Request) -> RepositoryChatService:
 
 def get_pull_request_service(request: Request) -> PullRequestAnalysisService:
     return request.app.state.pull_request_analysis
+
+
+def get_ci_analysis_service(request: Request) -> CIAnalysisService:
+    return request.app.state.ci_analysis
 
 
 @router.post("/github", response_model=RepositoryWorkspace, status_code=status.HTTP_201_CREATED)
@@ -114,6 +120,20 @@ async def analyze_pull_request(
         payload.diff,
         payload.title,
         payload.description,
+    )
+
+
+@router.post("/{workspace_id}/ci-analysis", response_model=CIAnalysisResponse)
+async def analyze_ci_failure(
+    workspace_id: str,
+    payload: CIAnalysisRequest,
+    request: Request,
+) -> CIAnalysisResponse:
+    return await run_in_threadpool(
+        get_ci_analysis_service(request).analyze,
+        workspace_id,
+        payload.logs,
+        payload.workflow_name,
     )
 
 

@@ -1240,10 +1240,96 @@
   white-space: nowrap;
 }
 
+.ciPanel { padding: 1.4rem; }
+.ciHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.ciHeader h2 { margin: 0.2rem 0 0; font-size: 1.2rem; }
+.ciHeader > div:first-child > p:last-child { margin: 0.55rem 0 0; color: #7f8d9d; font-size: 0.75rem; }
+.failureBadge {
+  display: grid;
+  min-width: 7rem;
+  gap: 0.2rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 0.65rem;
+  background: rgba(248, 113, 113, 0.06);
+  text-align: right;
+}
+.failureBadge span { color: #fca5a5; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
+.failureBadge strong { color: #7f8d9d; font-size: 0.57rem; font-weight: 500; }
+.ciForm { display: grid; gap: 0.65rem; margin-top: 1.15rem; }
+.ciForm input,
+.ciForm textarea {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 0.6rem;
+  outline: none;
+  background: #080e15;
+  color: #dfe8ef;
+  font: inherit;
+}
+.ciForm input { padding: 0.72rem 0.8rem; font-size: 0.75rem; }
+.ciForm textarea {
+  min-height: 12rem;
+  padding: 0.85rem;
+  resize: vertical;
+  color: #b9c7d4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  line-height: 1.55;
+}
+.ciForm input:focus,
+.ciForm textarea:focus { border-color: rgba(94, 234, 212, 0.55); box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.07); }
+.ciActions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.ciActions span { color: #586878; font-size: 0.62rem; }
+.ciActions button {
+  flex: none;
+  padding: 0.68rem 1rem;
+  border: 0;
+  border-radius: 0.58rem;
+  background: #5eead4;
+  color: #07110f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+.ciActions button:disabled { cursor: wait; opacity: 0.5; }
+.ciResults { display: grid; gap: 1rem; margin-top: 1.3rem; padding-top: 1.2rem; border-top: 1px solid rgba(148, 163, 184, 0.1); }
+.ciDiagnosis { padding: 1rem; border-left: 2px solid #f87171; border-radius: 0 0.55rem 0.55rem 0; background: rgba(248, 113, 113, 0.035); }
+.ciDiagnosis > span { color: #d68b8b; font-size: 0.56rem; letter-spacing: 0.07em; text-transform: uppercase; }
+.ciDiagnosis h3 { margin: 0.4rem 0 0; color: #d8e1e8; font-size: 0.82rem; line-height: 1.5; }
+.ciDiagnosis p { display: grid; gap: 0.25rem; margin: 0.8rem 0 0; color: #8f9eac; font-size: 0.68rem; line-height: 1.5; }
+.ciDiagnosis p b { color: #f0b4b4; font-size: 0.56rem; letter-spacing: 0.05em; text-transform: uppercase; }
+.ciColumns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; }
+.ciList { min-width: 0; padding: 0.85rem; border: 1px solid rgba(148, 163, 184, 0.09); border-radius: 0.65rem; background: rgba(255, 255, 255, 0.014); }
+.ciList h3,
+.ciEvidenceGrid h3 { display: flex; justify-content: space-between; margin: 0 0 0.65rem; color: #a9b7c4; font-size: 0.65rem; text-transform: uppercase; }
+.ciList h3 span,
+.ciEvidenceGrid h3 span { color: #5eead4; }
+.ciList ul { display: grid; gap: 0.5rem; margin: 0; padding-left: 1.1rem; color: #8797a8; font-size: 0.63rem; line-height: 1.45; }
+.ciList code { color: #9cebdd; font-size: 0.61rem; }
+.ciList > p { margin: 0; color: #607183; font-size: 0.63rem; }
+.ciEvidenceGrid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 0.8rem; }
+.ciEvidenceGrid > section { min-width: 0; padding: 0.85rem; border: 1px solid rgba(148, 163, 184, 0.09); border-radius: 0.65rem; }
+.logEvidence,
+.repoEvidence { display: grid; gap: 0.5rem; }
+.logEvidence p { display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: baseline; gap: 0.5rem; margin: 0; padding: 0.6rem; border-radius: 0.45rem; background: #080e15; }
+.logEvidence b { color: #fca5a5; font-size: 0.57rem; }
+.logEvidence small { color: #536475; font-size: 0.55rem; }
+.logEvidence code { overflow: hidden; color: #aebbc7; font-size: 0.6rem; text-overflow: ellipsis; white-space: nowrap; }
+.repoEvidence details { padding: 0.65rem; border-radius: 0.45rem; background: #080e15; }
+.repoEvidence summary { display: flex; align-items: center; gap: 0.5rem; min-width: 0; color: #8cf2e1; cursor: pointer; font-size: 0.61rem; }
+.repoEvidence summary b { flex: none; color: #5eead4; }
+.repoEvidence summary code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.repoEvidence p { margin: 0.6rem 0 0; color: #748394; font-size: 0.6rem; }
+.repoEvidence pre { max-height: 10rem; margin: 0.6rem 0 0; padding: 0.65rem; overflow: auto; border-radius: 0.4rem; background: #05090e; color: #aebbc7; font-size: 0.58rem; line-height: 1.5; white-space: pre-wrap; }
+
 @media (max-width: 70rem) {
   .overview { grid-template-columns: 1fr; }
   .metrics { grid-column: 1; }
   .reviewGrid { grid-template-columns: 1fr; }
+  .ciColumns { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 52rem) {
@@ -1266,4 +1352,7 @@
   .impactGrid { grid-template-columns: 1fr; }
   .prActions { align-items: stretch; flex-direction: column; }
   .prActions button { width: 100%; }
+  .ciEvidenceGrid { grid-template-columns: 1fr; }
+  .ciActions { align-items: stretch; flex-direction: column; }
+  .ciActions button { width: 100%; }
 }

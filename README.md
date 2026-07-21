@@ -115,6 +115,27 @@ JSON
 
 The MVP accepts pasted diffs; it does not fetch pull requests from GitHub yet.
 
+## Explain a CI/CD failure
+
+Paste the failed workflow step output into the dashboard's **CI/CD Copilot** panel. The analyzer classifies common test, type-check, lint, build, dependency, and configuration failures; extracts the most relevant log lines; matches mentioned paths against the repository index; and retrieves related code. It returns a likely cause, affected files, recommendations, validation steps, and separate log/source evidence.
+
+If `OPENAI_API_KEY` is configured, the explanation is AI-enhanced from only that bounded evidence. Common credential-shaped values are redacted before evidence is sent to OpenAI. Without a key, deterministic classification and repository retrieval still run.
+
+Test the endpoint directly:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/ci-analysis \
+  -H 'Content-Type: application/json' \
+  --data-binary @- <<'JSON'
+{
+  "workflow_name": "Tests",
+  "logs": "Run pytest\nFAILED tests/test_users.py::test_create_user\nAssertionError: expected 201, received 422\nProcess completed with exit code 1"
+}
+JSON
+```
+
+This phase accepts pasted logs. Direct GitHub Actions integration and automatic patch generation are not implemented.
+
 ## Run the web app
 
 In a second terminal:

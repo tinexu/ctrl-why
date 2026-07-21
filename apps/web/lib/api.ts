@@ -3,6 +3,7 @@ import type {
   RepositoryChatResponse,
   RepositoryIndex,
   PullRequestAnalysisResponse,
+  CIAnalysisResponse,
   RepositoryWorkspace,
 } from "./repository-types";
 
@@ -19,6 +20,17 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
+}
+
+export function analyzeCIFailure(
+  workspaceId: string,
+  logs: string,
+  workflowName?: string,
+): Promise<CIAnalysisResponse> {
+  return request(`/api/v1/repositories/${workspaceId}/ci-analysis`, {
+    method: "POST",
+    body: JSON.stringify({ logs, workflow_name: workflowName || null }),
+  });
 }
 
 export function analyzePullRequest(

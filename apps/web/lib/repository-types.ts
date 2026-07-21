@@ -154,3 +154,22 @@ export type PullRequestAnalysisResponse = {
     description: string;
   }>;
 };
+
+export type CIAnalysisResponse = {
+  workspace_id: string;
+  category: "test" | "typecheck" | "lint" | "build" | "dependency" | "configuration" | "unknown";
+  summary: string;
+  likely_root_cause: string;
+  confidence: number;
+  ai_enhanced: boolean;
+  failed_commands: string[];
+  affected_files: string[];
+  recommendations: string[];
+  validation_steps: string[];
+  log_evidence: Array<{
+    reference: number;
+    line: number;
+    content: string;
+  }>;
+  repository_evidence: RepositorySearchResult[];
+};
