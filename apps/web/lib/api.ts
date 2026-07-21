@@ -2,7 +2,6 @@ import type {
   ChatMessage,
   RepositoryChatResponse,
   RepositoryIndex,
-  RepositorySearchResponse,
   RepositoryWorkspace,
 } from "./repository-types";
 
@@ -34,17 +33,6 @@ export function indexRepository(workspaceId: string): Promise<RepositoryIndex> {
 
 export function deleteRepository(workspaceId: string): Promise<void> {
   return request(`/api/v1/repositories/${workspaceId}`, { method: "DELETE" });
-}
-
-export function searchRepository(
-  workspaceId: string,
-  query: string,
-  limit = 5,
-): Promise<RepositorySearchResponse> {
-  return request(`/api/v1/repositories/${workspaceId}/search`, {
-    method: "POST",
-    body: JSON.stringify({ query, limit }),
-  });
 }
 
 export function chatWithRepository(

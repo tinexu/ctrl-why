@@ -266,6 +266,12 @@
   background: rgba(94, 234, 212, 0.07);
 }
 
+.chatMessage[data-role="assistant"] {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
 .messageAuthor { color: #7debd9; font-size: 0.64rem; text-transform: uppercase; }
 .chatMessage p { margin: 0.45rem 0 0; color: #c1ccd6; font-size: 0.78rem; line-height: 1.65; white-space: pre-wrap; }
 
@@ -301,6 +307,98 @@
   background: #080d13;
   color: #8cf2e1;
   font-size: 0.6rem;
+}
+
+.relevantCode {
+  margin-top: 0.8rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  padding-top: 0.7rem;
+}
+
+.relevantCode summary {
+  color: #a9b7c4;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-weight: 650;
+  list-style-position: outside;
+}
+
+.relevantCode summary span {
+  margin-left: 0.35rem;
+  color: #607183;
+  font-weight: 500;
+}
+
+.sourceList {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sourceCard {
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid rgba(148, 163, 184, 0.09);
+  border-radius: 0.55rem;
+  background: rgba(4, 9, 14, 0.38);
+}
+
+.sourceHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.sourceHeading > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.sourceHeading code {
+  overflow: hidden;
+  color: #8cf2e1;
+  font-size: 0.7rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sourceHeading small {
+  color: #6f8091;
+  font-size: 0.61rem;
+}
+
+.sourceHeading > span {
+  flex: none;
+  padding: 0.24rem 0.38rem;
+  border-radius: 999px;
+  background: rgba(94, 234, 212, 0.08);
+  color: #79d9ca;
+  font-size: 0.56rem;
+}
+
+.sourceCard > p {
+  margin-top: 0.55rem;
+  color: #8c9baa;
+  font-size: 0.65rem;
+}
+
+.sourceCard > pre {
+  box-sizing: border-box;
+  max-height: 11rem;
+  margin: 0.65rem 0 0;
+  padding: 0.7rem;
+  overflow: auto;
+  border-radius: 0.45rem;
+  background: #080d13;
+  color: #b9c7d4;
+  font-size: 0.62rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
 }
 
 .chatThinking { margin: 0; color: #7f8d9d; font-size: 0.72rem; }

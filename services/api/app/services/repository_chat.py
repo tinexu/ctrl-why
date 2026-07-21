@@ -48,6 +48,7 @@ class RepositoryChatService:
                 workspace_id=workspace_id,
                 answer="I could not find enough repository evidence to answer that question.",
                 citations=[],
+                sources=[],
             )
 
         evidence = "\n\n".join(
@@ -105,6 +106,7 @@ class RepositoryChatService:
             workspace_id=workspace_id,
             answer=answer,
             citations=citations,
+            sources=search.results,
         )
 
     def _responses(self) -> ResponsesClient:

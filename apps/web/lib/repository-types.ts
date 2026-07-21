@@ -91,12 +91,6 @@ export type RepositorySearchResult = {
   reason: string;
 };
 
-export type RepositorySearchResponse = {
-  workspace_id: string;
-  query: string;
-  results: RepositorySearchResult[];
-};
-
 export type ChatMessage = {
   role: "user" | "assistant";
   content: string;
@@ -114,4 +108,5 @@ export type RepositoryChatResponse = {
   workspace_id: string;
   answer: string;
   citations: ChatCitation[];
+  sources: RepositorySearchResult[];
 };

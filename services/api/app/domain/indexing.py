@@ -114,3 +114,4 @@ class RepositoryChatResponse(BaseModel):
     workspace_id: str
     answer: str
     citations: list[ChatCitation]
+    sources: list[RepositorySearchResult]

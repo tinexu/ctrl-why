@@ -5,11 +5,14 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { chatWithRepository } from "@/lib/api";
-import type { ChatCitation, ChatMessage } from "@/lib/repository-types";
+import type { ChatCitation, ChatMessage, RepositorySearchResult } from "@/lib/repository-types";
 
 import styles from "./dashboard.module.css";
 
-type DisplayMessage = ChatMessage & { citations?: ChatCitation[] };
+type DisplayMessage = ChatMessage & {
+  citations?: ChatCitation[];
+  sources?: RepositorySearchResult[];
+};
 
 export function RepositoryChat({ workspaceId }: { workspaceId: string }) {
   const [question, setQuestion] = useState("");
@@ -32,7 +35,12 @@ export function RepositoryChat({ workspaceId }: { workspaceId: string }) {
       const response = await chatWithRepository(workspaceId, trimmedQuestion, history);
       setMessages((current) => [
         ...current,
-        { role: "assistant", content: response.answer, citations: response.citations },
+        {
+          role: "assistant",
+          content: response.answer,
+          citations: response.citations,
+          sources: response.sources,
+        },
       ]);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "The AI could not answer right now.");
@@ -46,7 +54,7 @@ export function RepositoryChat({ workspaceId }: { workspaceId: string }) {
       <div className={styles.searchIntro}>
         <p className={styles.eyebrow}>AI codebase advisor</p>
         <h2>Ask this repository</h2>
-        <p>Get an explanation grounded in the indexed code, with the supporting files and line ranges.</p>
+        <p>Ask how something works or where it lives. Get a clear answer and the exact supporting code.</p>
       </div>
 
       <div className={styles.chatTranscript} aria-live="polite">
@@ -73,6 +81,28 @@ export function RepositoryChat({ workspaceId }: { workspaceId: string }) {
                   </code>
                 ))}
               </div>
+            )}
+            {message.sources && message.sources.length > 0 && (
+              <details className={styles.relevantCode}>
+                <summary>Relevant code <span>{message.sources.length} matches</span></summary>
+                <ol className={styles.sourceList}>
+                  {message.sources.map((source) => (
+                    <li className={styles.sourceCard} key={source.chunk_id}>
+                      <div className={styles.sourceHeading}>
+                        <div>
+                          <code>{source.path}</code>
+                          <small>
+                            {source.symbol ?? "File-level code"} · lines {source.start_line}–{source.end_line}
+                          </small>
+                        </div>
+                        <span>{Math.round(source.score * 100)}%</span>
+                      </div>
+                      <p>{source.reason}</p>
+                      <pre><code>{source.excerpt}</code></pre>
+                    </li>
+                  ))}
+                </ol>
+              </details>
             )}
           </article>
         ))}

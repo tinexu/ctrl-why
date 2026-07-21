@@ -66,6 +66,8 @@ def test_chat_answers_with_grounded_citations(tmp_path: Path) -> None:
     result = response.json()
     assert "verify_token" in result["answer"]
     assert result["citations"]
+    assert result["sources"]
+    assert all(source["excerpt"] for source in result["sources"])
     assert {citation["path"] for citation in result["citations"]} <= {
         "pkg/auth.py",
         "pkg/service.py",
