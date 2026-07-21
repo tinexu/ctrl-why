@@ -1,24 +1,98 @@
 # WTF Does This Repo Do?
 
-An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. It currently supports secure repository ingestion, Tree-sitter source parsing, dependency graph construction, code chunking, an ephemeral local vector index, grounded repository chat, and pasted Git diff impact analysis.
+An AI-powered codebase advisor for understanding unfamiliar repositories, reviewing proposed changes, and debugging CI failures. Import a public GitHub repository, explore its structure, ask grounded questions, analyze a pasted Git diff, and connect failed pipeline logs to relevant source code.
+
+## What it does
+
+- Imports public GitHub repositories into isolated temporary workspaces.
+- Parses Python, JavaScript, TypeScript, and TSX with Tree-sitter.
+- Discovers files, symbols, imports, calls, code chunks, and dependency relationships.
+- Displays structural, file-level, and call-level graphs.
+- Answers repository questions using retrieved code with file-and-line citations.
+- Shows ranked source excerpts beneath each AI answer.
+- Analyzes pasted unified Git diffs for impact, risk, affected dependents, security concerns, and suggested tests.
+- Explains pasted CI/CD logs using failure classification, log evidence, and retrieved repository evidence.
+
+## Architecture
+
+```text
+Public GitHub repository
+          │
+          ▼
+ Temporary ingestion workspace
+          │
+          ▼
+ Tree-sitter parsing and discovery
+          │
+          ├── File and symbol metadata
+          ├── Import and call relationships
+          ├── Symbol-aware code chunks
+          └── Ephemeral local vector index
+                         │
+          ┌──────────────┼──────────────┐
+          ▼              ▼              ▼
+ Grounded chat     Diff analysis     CI analysis
+          │              │              │
+          └──── Explanations and bounded evidence ────┘
+```
+
+The backend is a FastAPI service. The frontend is a Next.js application using React Flow for graph visualization. Repository workspaces and indexes are stored locally in memory and expire automatically.
+
+## Project structure
+
+```text
+apps/web/          Next.js frontend
+services/api/      FastAPI backend
+```
+
+## Built with Codex and GPT-5.6
+
+Codex was used as an engineering collaborator throughout the project rather than only as a code generator. We used it to inspect the evolving repository, translate the product proposal into an implementation plan, implement and test backend and frontend features, diagnose integration failures, review security boundaries, resolve Git collaboration issues, and keep the documentation aligned with the working product.
+
+Codex accelerated:
+
+- Temporary repository ingestion and workspace lifecycle design.
+- Tree-sitter parsing across Python, JavaScript, TypeScript, and TSX.
+- Symbol-aware chunking, dependency extraction, local retrieval, and graph data.
+- GitHub ingestion and Next.js/FastAPI integration.
+- Retrieval-grounded repository chat with file-and-line citations.
+- Safe symbolic-link handling discovered while testing a real public repository.
+- Pull-request diff analysis and CI/CD failure analysis workflows.
+- Backend tests, frontend validation, debugging, and submission-readiness review.
+
+The team made the key product and design decisions. These included focusing on the difficulty of navigating unfamiliar code, combining the original Feature Finder and AI Advisor into one clearer chat experience, keeping source evidence visible beneath generated answers, separating the dashboard into Explore, Ask, Review change, and Debug CI workflows, and prioritizing interactive architectural orientation.
+
+GPT-5.6 powers the AI-enhanced portions through the OpenAI Responses API. The backend retrieves or constructs bounded evidence, sends it with the user’s request, and instructs the model to stay grounded in that evidence. Repository chat pairs generated explanations with exact retrieved paths, line ranges, and excerpts. Diff and CI analysis retain deterministic fallbacks and use AI to improve explanations when an API key is configured.
+
+The collaboration was iterative: the team tested real repositories, identified confusing or incomplete experiences, made product decisions, and used Codex to implement and verify targeted improvements while preserving human control over scope and final decisions.
 
 ## Prerequisites
 
 - Node.js 20 or newer
 - Python 3.11 or newer
 - npm
+- Git
+- An OpenAI API key with available API credits for AI-enhanced output
 
-## Environment
+## Environment setup
 
-Copy the shared example environment file:
+From the repository root:
 
 ```bash
 cp .env.example .env
 ```
 
-The checked-in defaults expect the frontend at `http://localhost:3000` and the API at `http://localhost:8000`.
+Add your OpenAI API key to `.env`:
 
-## Run the API
+```env
+OPENAI_API_KEY=your_api_key_here
+```
+
+The defaults expect the frontend at `http://localhost:3000` and API at `http://localhost:8000`. Never commit `.env`; it is ignored by Git.
+
+## Run locally
+
+### 1. Start the API
 
 ```bash
 cd services/api
@@ -28,79 +102,38 @@ pip install -r requirements-dev.txt
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Verify [http://localhost:8000/health](http://localhost:8000/health). It should return `{"status":"ok"}`.
+Verify [http://localhost:8000/health](http://localhost:8000/health) returns:
 
-## Ingest a repository
-
-Clone a public GitHub repository into temporary storage:
-
-```bash
-curl -X POST http://localhost:8000/api/v1/repositories/github \
-  -H 'Content-Type: application/json' \
-  -d '{"repository_url":"https://github.com/owner/repository"}'
+```json
+{"status":"ok"}
 ```
 
-Or upload a ZIP archive:
+### 2. Start the web app
+
+In a second terminal, from the repository root:
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/repositories/uploads \
-  -F 'repository=@repository.zip;type=application/zip'
+cd apps/web
+npm install
+npm run dev
 ```
 
-Both endpoints return an opaque workspace `id`, file count, byte count, and expiration time. Inspect or delete the workspace with:
+Open [http://localhost:3000](http://localhost:3000).
 
-```bash
-curl http://localhost:8000/api/v1/repositories/WORKSPACE_ID
-curl -X DELETE http://localhost:8000/api/v1/repositories/WORKSPACE_ID
-```
+## Using the product
 
-Repository workspaces expire after one hour by default and are deleted when the API shuts down. Git metadata is removed after cloning, unsafe archive paths and symbolic links are rejected, and configurable file/size limits protect temporary storage. Repository code is never executed.
+1. Import a public GitHub repository.
+2. Wait for ingestion, parsing, dependency extraction, and indexing.
+3. Use **Explore** to inspect the overview and dependency graphs.
+4. Use **Ask** for grounded repository questions and expand **Relevant code**.
+5. Use **Review change** to paste a unified Git diff and inspect impact and risk.
+6. Use **Debug CI** to paste failed pipeline output and connect it to likely source files.
 
-## Parse an imported repository
+The four views remain mounted while switching, so chat history and pasted analyses are preserved. Repository indexes are ephemeral; restart the import after restarting the API.
 
-Parse the supported source files in an active workspace:
+## Pull-request diff analysis
 
-```bash
-curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/parse
-```
-
-The response contains normalized file metadata and discovered functions, methods, classes, interfaces, and type aliases with source locations. Python, JavaScript, TypeScript, and TSX are currently supported.
-
-## Index a parsed repository
-
-Build or replace the in-memory index for an active workspace:
-
-```bash
-curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/index
-```
-
-Retrieve the current index without rebuilding it:
-
-```bash
-curl http://localhost:8000/api/v1/repositories/WORKSPACE_ID/index
-```
-
-The index contains normalized metadata, resolved local imports, external-module references, conservative internal call edges, graph nodes and edges, symbol-aware code chunks, and deterministic local embeddings. Indexes expire and are deleted with their repository workspace. The feature-hashing embedding adapter provides local vector indexing without sending the full repository to an external service. Chat retrieves a small set of relevant chunks before asking the configured OpenAI model to answer.
-
-## Find where a feature is implemented
-
-Search an indexed repository with a natural-language description:
-
-```bash
-curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/search \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"Where is authentication handled?","limit":5}'
-```
-
-Results include ranked file paths, symbols, line ranges, relevance scores, match reasons, and bounded source excerpts. The dashboard exposes the same workflow through its **Feature finder** panel.
-
-The web app provides a form for the same public GitHub ingestion flow. Interactive API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
-
-## Analyze a pull request diff
-
-After indexing a repository, paste a unified Git diff into the dashboard's **Pull request impact** panel. The analyzer maps changed lines to indexed symbols, finds files that import or call changed code, scores risk, flags a small set of suspicious added-line patterns, and suggests tests. If `OPENAI_API_KEY` is configured, the summary and additional test suggestions are AI-enhanced using only the structured analysis and redacted added-line evidence. Without a key, the complete deterministic analysis still works.
-
-You can test the endpoint directly:
+The MVP accepts pasted unified Git diffs. It maps changed lines to indexed symbols, finds dependent files, assigns a risk score, checks selected suspicious added-line patterns, and suggests tests. With `OPENAI_API_KEY`, the explanation is AI-enhanced from structured analysis and redacted added-line evidence.
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/pull-request-analysis \
@@ -113,15 +146,11 @@ curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/pull-request
 JSON
 ```
 
-The MVP accepts pasted diffs; it does not fetch pull requests from GitHub yet.
+Direct GitHub pull-request fetching is not implemented yet.
 
-## Explain a CI/CD failure
+## CI/CD failure analysis
 
-Paste the failed workflow step output into the dashboard's **CI/CD Copilot** panel. The analyzer classifies common test, type-check, lint, build, dependency, and configuration failures; extracts the most relevant log lines; matches mentioned paths against the repository index; and retrieves related code. It returns a likely cause, affected files, recommendations, validation steps, and separate log/source evidence.
-
-If `OPENAI_API_KEY` is configured, the explanation is AI-enhanced from only that bounded evidence. Common credential-shaped values are redacted before evidence is sent to OpenAI. Without a key, deterministic classification and repository retrieval still run.
-
-Test the endpoint directly:
+The CI Copilot classifies common test, type-check, lint, build, dependency, and configuration failures. It extracts relevant log lines, matches mentioned paths against the index, retrieves related code, and returns a likely cause, recommendations, and validation steps. Credential-shaped values are redacted before AI enhancement.
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/ci-analysis \
@@ -134,45 +163,81 @@ curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/ci-analysis 
 JSON
 ```
 
-This phase accepts pasted logs. Direct GitHub Actions integration and automatic patch generation are not implemented.
+Direct GitHub Actions integration and automatic patch generation are not implemented yet.
 
-## Run the web app
+## API endpoints
 
-In a second terminal:
+Interactive documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs) outside production.
 
-```bash
-cd apps/web
-npm install
-cp ../../.env.example .env.local
-npm run dev
+```text
+POST   /api/v1/repositories/github
+POST   /api/v1/repositories/uploads
+POST   /api/v1/repositories/{workspace_id}/parse
+POST   /api/v1/repositories/{workspace_id}/index
+GET    /api/v1/repositories/{workspace_id}/index
+POST   /api/v1/repositories/{workspace_id}/search
+POST   /api/v1/repositories/{workspace_id}/chat
+POST   /api/v1/repositories/{workspace_id}/pull-request-analysis
+POST   /api/v1/repositories/{workspace_id}/ci-analysis
+GET    /api/v1/repositories/{workspace_id}
+DELETE /api/v1/repositories/{workspace_id}
 ```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-Submit a public GitHub URL to import and index the repository. When indexing completes, the dashboard displays a hierarchical source tree, a structural repository overview, an architecture-level import graph, and a detailed symbol relationship graph. The overview is derived from static metadata; it is not AI-generated.
 
 ## Test and build
 
-After installing both applications' dependencies:
+After installing both applications’ dependencies:
 
 ```bash
 make test
 make build
 ```
 
-## Recommended demo flow
+This runs the backend test suite, frontend TypeScript checks, and optimized Next.js production build.
 
-1. Submit a small public Python or TypeScript repository and show the import/index progress timeline.
-2. In **Explore**, inspect the structural overview and select an import or call relationship in the graph to show its underlying files and lines.
-3. In **Ask**, ask a repository-specific question and expand **Relevant code** to show that the answer is retrieval-grounded.
-4. In **Review change**, paste a real `git diff` from the analyzed repository and walk through affected dependents, risk, security findings, tests, and evidence.
-5. In **Debug CI**, paste a failed test or type-check log that mentions an indexed path and compare the log evidence with retrieved repository evidence.
+## Security and privacy
 
-The four dashboard views remain mounted while switching, so chat history and pasted-analysis results are preserved during the demo. If indexing fails after import, use **Retry analysis** to reuse the existing temporary workspace.
+- Only HTTPS GitHub URLs in the form `https://github.com/owner/repository` are accepted.
+- Cloning is non-interactive, shallow, single-branch, and timeout-limited.
+- Git metadata is removed after cloning.
+- Symbolic links are removed from cloned repositories without following their targets.
+- ZIP uploads reject unsafe paths and symbolic links.
+- File-count, expanded-size, upload-size, and source-file-size limits protect temporary storage.
+- Repository code is parsed as data and is never executed.
+- Workspaces expire after one hour by default and are removed at API shutdown.
+- Repository chat sends only retrieved source excerpts to OpenAI.
+- CI evidence and added diff lines are redacted for common credential patterns before AI enhancement.
 
-## Current structure
+Use public repositories that you are comfortable sending to the configured AI provider. Private repository authentication is not supported.
+
+## Current limitations
+
+- The web interface imports public GitHub repositories only.
+- Supported languages are Python, JavaScript, TypeScript, and TSX.
+- Workspaces and indexes are in-memory and are not shared across API processes.
+- Retrieval uses deterministic local feature hashing rather than hosted semantic embeddings.
+- Static dependency analysis may miss dynamic dispatch, runtime imports, generated code, or framework-specific behavior.
+- Citations display source paths and line ranges, but an integrated clickable code viewer is not implemented.
+- Pull requests and CI logs must be pasted rather than fetched directly from GitHub.
+- Automatic patches and merges are not implemented.
+
+## Judge testing
+
+The project is designed for current desktop browsers. Local development has been tested on macOS; the Node.js and Python services are also suitable for Linux environments with the listed prerequisites.
+
+Judges can follow **Environment setup** and **Run locally**. Before submission, replace this placeholder with the hosted demo URL so judges can test without rebuilding from source:
 
 ```text
-apps/web/          Next.js frontend
-services/api/      FastAPI backend
+Demo URL: add before submission
 ```
+
+No test account is required because the current product accepts public GitHub repositories.
+
+## Recommended demo flow
+
+1. Import a small public Python or TypeScript repository and show the progress timeline.
+2. In **Explore**, select a meaningful relationship in the graph.
+3. In **Ask**, ask a repository-specific question and expand **Relevant code**.
+4. In **Review change**, paste a real diff and show dependents, risk, tests, and evidence.
+5. In **Debug CI**, paste a failed test log and compare log evidence with repository evidence.
+
+Keep the required demonstration video under three minutes and include audio explaining both the product and how Codex and GPT-5.6 contributed.
