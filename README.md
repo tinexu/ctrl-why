@@ -70,19 +70,36 @@ The collaboration was iterative: the team tested real repositories, identified c
 
 ### Codex collaboration evidence
 
-> Add screenshots, exported activity, terminal history, or commit references below.
+The commit history below records the implementation milestones produced during the
+team's iterative collaboration with Codex. Dates and times use Pacific Time.
 
-- Initial planning session: [INSERT SCREENSHOT OR LINK]
-- Date and timestamp: [INSERT TIMESTAMP]
-- Repository ingestion implementation: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
-- Tree-sitter parsing implementation: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
-- Dependency graph iteration: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
-- Repository question workflow: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
-- Pull-request analysis implementation: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
-- CI/CD analysis implementation: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
-- Testing and final polish: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
-- Total Codex usage period: [INSERT START AND END TIMES]
-- Relevant commit history: [INSERT GITHUB LINK]
+- Initial planning and application scaffold — July 17, 2026 at 7:31 AM:
+  [`d088976`](https://github.com/tinexu/ctrl-why/commit/d088976)
+- Secure repository ingestion — July 17, 2026 at 11:07 AM:
+  [`203c943`](https://github.com/tinexu/ctrl-why/commit/203c943)
+- GitHub ingestion and frontend integration — July 17, 2026 at 12:11 PM:
+  [`0ceaf0b`](https://github.com/tinexu/ctrl-why/commit/0ceaf0b)
+- Tree-sitter parsing — July 19, 2026 at 1:33 PM:
+  [`bb600d0`](https://github.com/tinexu/ctrl-why/commit/bb600d0)
+- Repository indexing and dependency graph — July 19, 2026 at 2:12 PM and 3:32 PM:
+  [`c0ac0b7`](https://github.com/tinexu/ctrl-why/commit/c0ac0b7),
+  [`32f8795`](https://github.com/tinexu/ctrl-why/commit/32f8795)
+- Repository question workflow with grounded citations — July 19, 2026 at 9:26 PM:
+  [`c9d296c`](https://github.com/tinexu/ctrl-why/commit/c9d296c)
+- Unified Feature Finder and AI Advisor experience — July 21, 2026 at 11:40 AM:
+  [`a9abc3e`](https://github.com/tinexu/ctrl-why/commit/a9abc3e)
+- Pull-request diff analysis — July 21, 2026 at 12:29 PM:
+  [`af712af`](https://github.com/tinexu/ctrl-why/commit/af712af)
+- CI/CD failure analysis — July 21, 2026 at 12:44 PM:
+  [`539079a`](https://github.com/tinexu/ctrl-why/commit/539079a)
+- Testing, symbolic-link hardening, and final polish — July 21, 2026:
+  [`b44511a`](https://github.com/tinexu/ctrl-why/commit/b44511a),
+  [`1190500`](https://github.com/tinexu/ctrl-why/commit/1190500),
+  [`b6016f0`](https://github.com/tinexu/ctrl-why/commit/b6016f0)
+- Production deployment configuration — July 21, 2026 at 2:38 PM:
+  [`32a0274`](https://github.com/tinexu/ctrl-why/commit/32a0274)
+- Total documented Codex collaboration period: July 17–21, 2026
+- Complete project history: [GitHub commits](https://github.com/tinexu/ctrl-why/commits/main/)
 
 ## Prerequisites
 
