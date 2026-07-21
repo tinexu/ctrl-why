@@ -2,6 +2,8 @@
 
 An AI-powered codebase advisor for understanding unfamiliar repositories, reviewing proposed changes, and debugging CI failures. Import a public GitHub repository, explore its structure, ask grounded questions, analyze a pasted Git diff, and connect failed pipeline logs to relevant source code.
 
+**Live demo:** [https://ctrl-why.vercel.app](https://ctrl-why.vercel.app)
+
 ## What it does
 
 - Imports public GitHub repositories into isolated temporary workspaces.
@@ -161,7 +163,7 @@ repository workspaces and indexes are temporary and stored in that process.
 
 From a private browser window, import a small public Python repository, open
 the generated workspace, ask a repository question, and confirm the evidence
-links expand. Then update the Demo URL near the top of this README.
+links expand.
 
 ## Using the product
 
@@ -267,11 +269,8 @@ Use public repositories that you are comfortable sending to the configured AI pr
 
 The project is designed for current desktop browsers. Local development has been tested on macOS; the Node.js and Python services are also suitable for Linux environments with the listed prerequisites.
 
-Judges can follow **Environment setup** and **Run locally**, or test the hosted demo without rebuilding the project:
-
-```text
-Demo URL: https://ctrl-why.vercel.app
-```
+Judges can follow **Environment setup** and **Run locally**, or use the
+[hosted demo](https://ctrl-why.vercel.app) without rebuilding the project.
 
 No test account is required because the current product accepts public GitHub repositories. The hosted backend runs on Render's free tier, so the first request after a period of inactivity can take up to approximately one minute while the service wakes.
 
