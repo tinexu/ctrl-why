@@ -23,7 +23,7 @@ def inspect_repository(path: Path, max_files: int, max_bytes: int) -> tuple[int,
         root = Path(current_root)
         for directory_name in directory_names:
             if (root / directory_name).is_symlink():
-                raise RepositoryLimitError("Repository symbolic links are not supported.")
+                raise RepositoryLimitError("Repository contains an unexpected symbolic link.")
         for file_name in file_names:
             file_path = root / file_name
             mode = file_path.lstat().st_mode
@@ -36,6 +36,24 @@ def inspect_repository(path: Path, max_files: int, max_bytes: int) -> tuple[int,
             if total_bytes > max_bytes:
                 raise RepositoryLimitError("Repository exceeds the expanded-size limit.")
     return file_count, total_bytes
+
+
+def remove_symbolic_links(path: Path) -> int:
+    """Remove links from a cloned repository without ever following their targets."""
+    removed = 0
+    for current_root, directory_names, file_names in os.walk(path, followlinks=False):
+        root = Path(current_root)
+        linked_directories = [name for name in directory_names if (root / name).is_symlink()]
+        directory_names[:] = [name for name in directory_names if name not in linked_directories]
+        for name in linked_directories:
+            (root / name).unlink()
+            removed += 1
+        for name in file_names:
+            entry = root / name
+            if entry.is_symlink():
+                entry.unlink()
+                removed += 1
+    return removed
 
 
 class RepositoryIngestionService:
@@ -54,6 +72,7 @@ class RepositoryIngestionService:
                 self._settings.repository_clone_timeout_seconds,
             )
             shutil.rmtree(content_path / ".git", ignore_errors=True)
+            remove_symbolic_links(content_path)
             file_count, total_bytes = inspect_repository(
                 content_path,
                 self._settings.repository_max_files,
@@ -111,4 +130,3 @@ class RepositoryIngestionService:
 
     def delete(self, workspace_id: str) -> None:
         self._workspaces.delete(workspace_id)
-
