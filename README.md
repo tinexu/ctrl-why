@@ -68,6 +68,22 @@ GPT-5.6 powers the AI-enhanced portions through the OpenAI Responses API. The ba
 
 The collaboration was iterative: the team tested real repositories, identified confusing or incomplete experiences, made product decisions, and used Codex to implement and verify targeted improvements while preserving human control over scope and final decisions.
 
+### Codex collaboration evidence
+
+> Add screenshots, exported activity, terminal history, or commit references below.
+
+- Initial planning session: [INSERT SCREENSHOT OR LINK]
+- Date and timestamp: [INSERT TIMESTAMP]
+- Repository ingestion implementation: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
+- Tree-sitter parsing implementation: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
+- Dependency graph iteration: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
+- Repository question workflow: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
+- Pull-request analysis implementation: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
+- CI/CD analysis implementation: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
+- Testing and final polish: [INSERT SCREENSHOT, COMMIT, OR SESSION LINK]
+- Total Codex usage period: [INSERT START AND END TIMES]
+- Relevant commit history: [INSERT GITHUB LINK]
+
 ## Prerequisites
 
 - Node.js 20 or newer
