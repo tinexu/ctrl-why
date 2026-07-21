@@ -578,12 +578,28 @@
 }
 
 .graphPanel {
-  min-height: 38rem;
+  min-height: 44rem;
   overflow: hidden;
 }
 
-.panelHeader h2 {
+.graphHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.05rem 1.15rem 0.9rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.graphHeader h2 {
+  margin: 0.18rem 0 0;
   font-size: 1.05rem;
+}
+
+.graphDescription {
+  margin: 0.4rem 0 0;
+  color: #718194;
+  font-size: 0.68rem;
 }
 
 .segmented {
@@ -610,8 +626,100 @@
   color: #8cf2e1;
 }
 
+.graphToolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  min-height: 4.1rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  background: rgba(4, 9, 14, 0.2);
+}
+
+.graphSearch {
+  display: grid;
+  width: min(24rem, 45%);
+  gap: 0.3rem;
+}
+
+.graphSearch > span {
+  color: #657587;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.graphSearch input {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 0.48rem;
+  outline: 0;
+  background: #080e15;
+  color: #dfe8ef;
+  font: inherit;
+  font-size: 0.7rem;
+}
+
+.graphSearch input:focus {
+  border-color: rgba(94, 234, 212, 0.45);
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.06);
+}
+
+.graphToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2rem;
+  color: #8594a4;
+  font-size: 0.65rem;
+}
+
+.graphToggle input {
+  accent-color: #5eead4;
+}
+
+.graphCounts {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2rem;
+  margin-left: auto;
+  color: #687789;
+  font-size: 0.62rem;
+  white-space: nowrap;
+}
+
+.graphCounts strong {
+  color: #aebbc7;
+}
+
+.graphCounts span {
+  width: 1px;
+  height: 0.8rem;
+  margin: 0 0.3rem;
+  background: rgba(148, 163, 184, 0.16);
+}
+
 .graphCanvas {
-  height: 34rem;
+  position: relative;
+  height: 35rem;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(94, 234, 212, 0.025), transparent 35%),
+    #090f16;
+}
+
+.graphLoading {
+  display: grid;
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  place-items: center;
+  background: rgba(8, 14, 21, 0.88);
+  color: #87a096;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
 }
 
 .graphCanvas :global(.react-flow__controls) {
@@ -649,6 +757,220 @@
   box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.3);
 }
 
+.graphCanvas :global(.react-flow__node) {
+  cursor: pointer;
+}
+
+.graphCanvas :global(.react-flow__edge-path) {
+  transition: opacity 160ms ease, stroke-width 160ms ease;
+}
+
+.graphCanvas :global(.react-flow__edge-interaction) {
+  cursor: pointer;
+}
+
+.graphLegend {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0 0 0.3rem 2.5rem !important;
+  padding: 0.42rem 0.55rem;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 0.45rem;
+  background: rgba(8, 14, 21, 0.9);
+  color: #8493a3;
+  font-size: 0.58rem;
+}
+
+.graphLegend span {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+}
+
+.graphLegend span::before {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: #5eead4;
+  content: "";
+}
+
+.graphLegend span[data-color="external"]::before { background: #fbbf24; }
+.graphLegend span[data-color="symbol"]::before { background: #93c5fd; }
+.graphLegend span[data-color="component"]::before { background: #a78bfa; }
+
+.graphEmpty {
+  display: grid;
+  height: 100%;
+  place-content: center;
+  gap: 0.4rem;
+  color: #8b9aaa;
+  text-align: center;
+}
+
+.graphEmpty strong {
+  color: #b8c4cf;
+  font-size: 0.8rem;
+}
+
+.graphEmpty span {
+  font-size: 0.68rem;
+}
+
+.graphFooter {
+  display: flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+  color: #627183;
+  font-size: 0.6rem;
+}
+
+.graphFooter strong {
+  max-width: 55%;
+  overflow: hidden;
+  color: #8ddfd1;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relationshipInspector {
+  border-top: 1px solid rgba(94, 234, 212, 0.15);
+  background: #0a1119;
+}
+
+.relationshipInspector > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.relationshipInspector h3 {
+  margin: 0.18rem 0 0;
+  color: #d9e4ec;
+  font-size: 0.8rem;
+}
+
+.relationshipInspector header button {
+  display: grid;
+  width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 0.4rem;
+  background: transparent;
+  color: #8b9aaa;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.relationshipList {
+  display: grid;
+  max-height: 15rem;
+  overflow-y: auto;
+  scrollbar-color: #334155 transparent;
+  scrollbar-width: thin;
+}
+
+.relationshipRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) minmax(0, 0.65fr);
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 2.7rem;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+}
+
+.relationshipRow:last-child {
+  border-bottom: 0;
+}
+
+.relationshipRow code,
+.relationshipRow small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relationshipRow code {
+  color: #aab8c5;
+  font-size: 0.64rem;
+}
+
+.relationshipRow code:first-child {
+  color: #7fdaca;
+}
+
+.relationshipRow > span {
+  color: #526477;
+  font-size: 0.7rem;
+}
+
+.relationshipRow small {
+  color: #68798a;
+  font-size: 0.58rem;
+  text-align: right;
+}
+
+.graphNodeContent strong,
+.graphNodeContent small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graphNodeContent {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: 1.8rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.8rem;
+}
+
+.graphNodeContent > div {
+  min-width: 0;
+}
+
+.graphNodeIcon {
+  display: grid;
+  width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 0.45rem;
+  background: rgba(255, 255, 255, 0.025);
+  color: #9eb0bf;
+  font-size: 0.8rem;
+}
+
+.graphCanvas[data-compact="true"] .graphNodeDetail,
+.graphCanvas[data-compact="true"] .nodeType {
+  display: none;
+}
+
+.graphCanvas[data-compact="true"] .graphNodeContent {
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: 0.4rem;
+}
+
+.graphHandle {
+  width: 0.42rem !important;
+  height: 0.42rem !important;
+  border: 1px solid #26394a !important;
+  background: #7890a3 !important;
+}
+
 .nodeType {
   display: block;
   margin-bottom: 0.32rem;
@@ -659,10 +981,8 @@
 }
 
 .nodeType + strong {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  color: #e3eaf0;
+  font-size: 0.7rem;
 }
 
 .nodeType ~ small {
@@ -689,4 +1009,12 @@
   .metrics { grid-template-columns: repeat(2, 1fr); }
   .overviewDetails { grid-template-columns: 1fr; }
   .searchInputRow { flex-direction: column; }
+  .graphHeader { align-items: flex-start; flex-direction: column; gap: 0.8rem; }
+  .graphToolbar { align-items: stretch; flex-direction: column; }
+  .graphSearch { width: 100%; }
+  .graphCounts { margin-left: 0; }
+  .graphCanvas { height: 30rem; }
+  .graphFooter { align-items: flex-start; flex-direction: column; }
+  .relationshipRow { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .relationshipRow small { display: none; }
 }
