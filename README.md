@@ -120,6 +120,49 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Deploy for judging
+
+The recommended demo deployment uses Vercel for the Next.js frontend and a
+single Render web service for the FastAPI backend. Keep the API at one instance:
+repository workspaces and indexes are temporary and stored in that process.
+
+### 1. Deploy the API on Render
+
+1. In Render, create a new **Blueprint** and connect this repository.
+2. Render will read `render.yaml` and create `ctrl-why-api`.
+3. Enter these secret environment variables when prompted:
+
+   ```env
+   OPENAI_API_KEY=your_api_key_here
+   APP_CORS_ORIGINS=https://your-project.vercel.app
+   ```
+
+   You can initially use the expected Vercel URL and update it after the
+   frontend has its final domain. Multiple allowed origins can be separated by
+   commas.
+
+4. Deploy and verify `https://your-api.onrender.com/health` returns
+   `{"status":"ok"}`.
+
+### 2. Deploy the frontend on Vercel
+
+1. Import this repository as a new Vercel project.
+2. Set **Root Directory** to `apps/web`. Vercel will detect Next.js.
+3. Add the production environment variable:
+
+   ```env
+   NEXT_PUBLIC_API_URL=https://your-api.onrender.com
+   ```
+
+4. Deploy, then copy the final Vercel URL into the Render
+   `APP_CORS_ORIGINS` value and redeploy the API if it changed.
+
+### 3. Verify the public demo
+
+From a private browser window, import a small public Python repository, open
+the generated workspace, ask a repository question, and confirm the evidence
+links expand. Then update the Demo URL near the top of this README.
+
 ## Using the product
 
 1. Import a public GitHub repository.
