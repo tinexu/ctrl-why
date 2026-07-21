@@ -6,6 +6,7 @@ import { DependencyGraph } from "./DependencyGraph";
 import { FileTree } from "./FileTree";
 import { RepositoryOverview } from "./RepositoryOverview";
 import { RepositoryChat } from "./RepositoryChat";
+import { PullRequestAnalysis } from "./PullRequestAnalysis";
 import styles from "./dashboard.module.css";
 
 export function RepositoryDashboard({
@@ -45,6 +46,7 @@ export function RepositoryDashboard({
           <RepositoryChat workspaceId={repository.id} />
           <RepositoryOverview index={index} />
           <DependencyGraph index={index} />
+          <PullRequestAnalysis workspaceId={repository.id} />
         </div>
       </div>
     </main>

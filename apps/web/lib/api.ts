@@ -2,6 +2,7 @@ import type {
   ChatMessage,
   RepositoryChatResponse,
   RepositoryIndex,
+  PullRequestAnalysisResponse,
   RepositoryWorkspace,
 } from "./repository-types";
 
@@ -18,6 +19,17 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
+}
+
+export function analyzePullRequest(
+  workspaceId: string,
+  diff: string,
+  title?: string,
+): Promise<PullRequestAnalysisResponse> {
+  return request(`/api/v1/repositories/${workspaceId}/pull-request-analysis`, {
+    method: "POST",
+    body: JSON.stringify({ diff, title: title || null }),
+  });
 }
 
 export function importGitHubRepository(repositoryUrl: string): Promise<RepositoryWorkspace> {

@@ -21,6 +21,7 @@ from app.services.repository_ingestion import RepositoryIngestionService
 from app.services.repository_chat import RepositoryChatService
 from app.services.repository_indexing import RepositoryIndexingService
 from app.services.repository_parsing import RepositoryParsingService
+from app.services.pull_request_analysis import InvalidDiffError, PullRequestAnalysisService
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -68,6 +69,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         runtime_settings.openai_api_key,
         runtime_settings.openai_model,
     )
+    application.state.pull_request_analysis = PullRequestAnalysisService(
+        indexing_service,
+        runtime_settings.openai_api_key,
+        runtime_settings.openai_model,
+    )
     application.include_router(health_router)
     application.include_router(repositories_router)
 
@@ -86,6 +92,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.add_exception_handler(
         WorkspaceNotFoundError,
         lambda _, error: JSONResponse(status_code=404, content={"detail": str(error)}),
+    )
+    application.add_exception_handler(
+        InvalidDiffError,
+        lambda _, error: JSONResponse(status_code=400, content={"detail": str(error)}),
     )
     return application
 

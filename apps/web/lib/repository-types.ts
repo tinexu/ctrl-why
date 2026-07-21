@@ -110,3 +110,47 @@ export type RepositoryChatResponse = {
   citations: ChatCitation[];
   sources: RepositorySearchResult[];
 };
+
+export type RiskLevel = "low" | "medium" | "high";
+
+export type PullRequestFinding = {
+  severity: RiskLevel;
+  title: string;
+  explanation: string;
+  evidence: number[];
+};
+
+export type PullRequestAnalysisResponse = {
+  workspace_id: string;
+  summary: string;
+  risk_score: number;
+  risk_level: RiskLevel;
+  ai_enhanced: boolean;
+  changed_files: Array<{
+    path: string;
+    previous_path: string | null;
+    kind: "added" | "modified" | "deleted" | "renamed";
+    additions: number;
+    deletions: number;
+    changed_lines: number[];
+    changed_symbols: string[];
+    indexed: boolean;
+  }>;
+  affected_files: Array<{
+    path: string;
+    relationship: string;
+    evidence_line: number | null;
+    confidence: number;
+  }>;
+  behavior_changes: PullRequestFinding[];
+  breaking_risks: PullRequestFinding[];
+  suggested_tests: string[];
+  security_concerns: PullRequestFinding[];
+  evidence: Array<{
+    reference: number;
+    path: string;
+    start_line: number;
+    end_line: number;
+    description: string;
+  }>;
+};

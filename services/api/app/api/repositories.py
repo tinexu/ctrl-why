@@ -17,6 +17,8 @@ from app.services.repository_chat import (
     RepositoryChatService,
 )
 from app.domain.parsing import RepositoryParseResult
+from app.domain.pull_requests import PullRequestAnalysisRequest, PullRequestAnalysisResponse
+from app.services.pull_request_analysis import PullRequestAnalysisService
 from app.services.repository_ingestion import RepositoryIngestionService
 from app.services.repository_indexing import RepositoryIndexingService
 from app.services.repository_parsing import RepositoryParsingService
@@ -38,6 +40,10 @@ def get_indexing_service(request: Request) -> RepositoryIndexingService:
 
 def get_chat_service(request: Request) -> RepositoryChatService:
     return request.app.state.repository_chat
+
+
+def get_pull_request_service(request: Request) -> PullRequestAnalysisService:
+    return request.app.state.pull_request_analysis
 
 
 @router.post("/github", response_model=RepositoryWorkspace, status_code=status.HTTP_201_CREATED)
@@ -94,6 +100,21 @@ async def chat_with_repository(
         raise HTTPException(status_code=503, detail=str(error)) from error
     except ChatProviderError as error:
         raise HTTPException(status_code=502, detail=str(error)) from error
+
+
+@router.post("/{workspace_id}/pull-request-analysis", response_model=PullRequestAnalysisResponse)
+async def analyze_pull_request(
+    workspace_id: str,
+    payload: PullRequestAnalysisRequest,
+    request: Request,
+) -> PullRequestAnalysisResponse:
+    return await run_in_threadpool(
+        get_pull_request_service(request).analyze,
+        workspace_id,
+        payload.diff,
+        payload.title,
+        payload.description,
+    )
 
 
 @router.get("/{workspace_id}", response_model=RepositoryWorkspace)

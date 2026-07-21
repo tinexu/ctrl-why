@@ -1,6 +1,6 @@
 # WTF Does This Repo Do?
 
-An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. It currently supports secure repository ingestion, Tree-sitter source parsing, dependency graph construction, code chunking, an ephemeral local vector index, and an interactive repository dashboard. AI features are not implemented yet.
+An AI-powered codebase intelligence tool for understanding unfamiliar repositories and reviewing changes. It currently supports secure repository ingestion, Tree-sitter source parsing, dependency graph construction, code chunking, an ephemeral local vector index, grounded repository chat, and pasted Git diff impact analysis.
 
 ## Prerequisites
 
@@ -80,7 +80,7 @@ Retrieve the current index without rebuilding it:
 curl http://localhost:8000/api/v1/repositories/WORKSPACE_ID/index
 ```
 
-The index contains normalized metadata, resolved local imports, external-module references, conservative internal call edges, graph nodes and edges, symbol-aware code chunks, and deterministic local embeddings. Indexes expire and are deleted with their repository workspace. The feature-hashing embedding adapter provides local vector indexing without sending code to an external service; AI-backed retrieval remains a later phase.
+The index contains normalized metadata, resolved local imports, external-module references, conservative internal call edges, graph nodes and edges, symbol-aware code chunks, and deterministic local embeddings. Indexes expire and are deleted with their repository workspace. The feature-hashing embedding adapter provides local vector indexing without sending the full repository to an external service. Chat retrieves a small set of relevant chunks before asking the configured OpenAI model to answer.
 
 ## Find where a feature is implemented
 
@@ -95,6 +95,25 @@ curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/search \
 Results include ranked file paths, symbols, line ranges, relevance scores, match reasons, and bounded source excerpts. The dashboard exposes the same workflow through its **Feature finder** panel.
 
 The web app provides a form for the same public GitHub ingestion flow. Interactive API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+## Analyze a pull request diff
+
+After indexing a repository, paste a unified Git diff into the dashboard's **Pull request impact** panel. The analyzer maps changed lines to indexed symbols, finds files that import or call changed code, scores risk, flags a small set of suspicious added-line patterns, and suggests tests. If `OPENAI_API_KEY` is configured, the summary and additional test suggestions are AI-enhanced using only the structured analysis and redacted added-line evidence. Without a key, the complete deterministic analysis still works.
+
+You can test the endpoint directly:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/repositories/WORKSPACE_ID/pull-request-analysis \
+  -H 'Content-Type: application/json' \
+  --data-binary @- <<'JSON'
+{
+  "title": "Change authentication behavior",
+  "diff": "diff --git a/pkg/auth.py b/pkg/auth.py\n--- a/pkg/auth.py\n+++ b/pkg/auth.py\n@@ -1,2 +1,2 @@\n-old behavior\n+new behavior"
+}
+JSON
+```
+
+The MVP accepts pasted diffs; it does not fetch pull requests from GitHub yet.
 
 ## Run the web app
 
