@@ -1,4 +1,4 @@
-# WTF Does This Repo Do?
+# Codebase Atlas
 
 An AI-powered codebase advisor for understanding unfamiliar repositories, reviewing proposed changes, and debugging CI failures. Import a public GitHub repository, explore its structure, ask grounded questions, analyze a pasted Git diff, and connect failed pipeline logs to relevant source code.
 

@@ -35,7 +35,7 @@ export function RepositoryDashboard({
   return (
     <main className={styles.dashboard}>
       <header className={styles.topbar}>
-        <div className={styles.brand}><span className={styles.brandMark}>?</span><span>WTF Does This Repo Do?</span></div>
+        <div className={styles.brand}><span className={styles.brandMark}>?</span><span>Codebase Atlas</span></div>
         <div className={styles.repositoryIdentity}>
           <span className={styles.readyDot} />
           <div><strong>{repository.name}</strong><small>Indexed {new Date(index.indexed_at).toLocaleTimeString()}</small></div>

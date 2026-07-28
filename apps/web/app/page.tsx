@@ -66,7 +66,7 @@ export default function Home() {
     <main className={styles.main}>
       <section className={styles.content}>
         <p className={styles.eyebrow}>Codebase intelligence</p>
-        <h1 className={styles.title}>WTF does this repo do?</h1>
+        <h1 className={styles.title}>Codebase Atlas</h1>
         <p className={styles.description}>
           Start with a public GitHub repository. We’ll import it into a temporary, isolated workspace for analysis.
         </p>
